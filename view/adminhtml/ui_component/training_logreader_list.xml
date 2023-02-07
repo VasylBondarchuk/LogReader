@@ -4,24 +4,24 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
-            <item name="provider" xsi:type="string">sample_grid.sample_grid_data_source</item>
-            <item name="deps" xsi:type="string">sample_grid.sample_grid_data_source</item>
+            <item name="provider" xsi:type="string">training_logreader_list.training_logreader_list_data_source</item>
+            <item name="deps" xsi:type="string">training_logreader_list.training_logreader_list_data_source</item>
         </item>
-        <item name="spinner" xsi:type="string">sample_grid_columns</item>
+        <item name="spinner" xsi:type="string">training_logreader_list_columns</item>
     </argument>
-    <dataSource name="sample_grid_data_source" component="Magento_Ui/js/grid/provider">
+    <dataSource name="training_logreader_list_data_source" component="Magento_Ui/js/grid/provider">
         <settings>
             <updateUrl path="mui/index/render"/>
         </settings>
         <aclResource>Tsg_Improvements::resource</aclResource>
-        <dataProvider class="Training\LogReader\Ui\Component\DataProvider\Grid" name="sample_grid_data_source">
+        <dataProvider class="Training\LogReader\Ui\Component\DataProvider\Grid" name="training_logreader_list_data_source">
             <settings>
                 <requestFieldName>id</requestFieldName>
                 <primaryFieldName>id</primaryFieldName>
             </settings>
         </dataProvider>
     </dataSource>
-    <columns name="sample_grid_columns">
+    <columns name="training_logreader_list_columns">
         <column name="file_name" sortOrder="10">
             <settings>
                 <label translate="true">File Name</label>
