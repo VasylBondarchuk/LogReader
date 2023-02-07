@@ -20,7 +20,7 @@ class Index extends \Magento\Backend\App\Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
-        $resultPage->setActiveMenu('Tsg_Improvements::menu');
+        $resultPage->setActiveMenu('Training_LogReader::menu');
         $resultPage->getConfig()->getTitle()->prepend(__('Log Files List '));
         return $resultPage;
     }

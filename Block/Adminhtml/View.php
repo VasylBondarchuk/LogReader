@@ -45,7 +45,7 @@ class View extends Template
     public function getFileName(): string
     {
         $urlArray = explode("/", $this->getCurrentPageUrl());
-        return $urlArray[count($urlArray)-1];
+        return $urlArray[7];
     }
 
     public function getFilePath(): string
@@ -55,9 +55,8 @@ class View extends Template
 
     public function getFileContent(): string
     {
-        return $this->file->isReadable($this->getFilePath())
-                ? $this->file->fileGetContents($this->getFilePath())
-                : '';
+        return $this->file->isReadable($this->getFilePath()) ?
+            $this->file->fileGetContents($this->getFilePath()) : " ";
     }
 
     public function displayFileContent(): string

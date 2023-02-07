@@ -36,7 +36,7 @@ class FileScanner
 
     public function getFileSize(string $filePath): string
     {
-        $result = "";
+        $result = '';
         $bytes = floatval($this->file->stat($filePath)['size']);
 
         $arBytes = [
@@ -48,9 +48,9 @@ class FileScanner
         ];
 
         foreach ($arBytes as $arItem) {
-            if ($bytes >= $arItem["VALUE"]) {
-                $result = $bytes / $arItem["VALUE"];
-                $result = str_replace(".", ",", (string)(round($result, 2)))." ".$arItem["UNIT"];
+            if ($bytes >= $arItem['VALUE']) {
+                $result = $bytes / $arItem['VALUE'];
+                $result = str_replace('.', ',', (string)(round($result, 2))) . ' ' . $arItem['UNIT'];
                 break;
             }
         }

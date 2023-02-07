@@ -22,7 +22,7 @@ class Grid extends AbstractDataProvider
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
     }
 
-    public function getFilesDetailsArray(string $directoryPath):array
+    public function getFilesDetailsArray(string $directoryPath) : array
     {
         $filesDetailsArray = [];
 
@@ -36,7 +36,7 @@ class Grid extends AbstractDataProvider
         return $filesDetailsArray;
     }
 
-    public function getData()
+    public function getData() : array
     {
         $result = [
             'items' => $this->getFilesDetailsArray(Configs::LOG_DIR_PATH),

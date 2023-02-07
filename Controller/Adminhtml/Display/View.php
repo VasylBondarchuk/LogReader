@@ -19,12 +19,12 @@ class View extends \Magento\Backend\App\Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
-        $resultPage->getConfig()->getTitle()->prepend(__('Log Files Viewer'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Log Files Reader'));
         return $resultPage;
     }
 
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('Tsg_Improvements::menu');
+        return $this->_authorization->isAllowed('Training_LogReader::menu');
     }
 }

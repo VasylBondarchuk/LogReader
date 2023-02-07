@@ -62,6 +62,6 @@ class Download extends \Magento\Backend\App\Action
 
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('Tsg_Improvements::menu');
+        return $this->_authorization->isAllowed('Training_LogReader::menu');
     }
 }
