@@ -54,7 +54,7 @@ class Download extends \Magento\Backend\App\Action
     }
 
     public function execute()
-    {
+    { 
         $this->downloadFile($this->getFilePathFromUrl());
         $resultPage = $this->resultPageFactory->create();
         return $resultPage;

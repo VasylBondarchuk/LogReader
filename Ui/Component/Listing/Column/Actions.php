@@ -30,11 +30,11 @@ class Actions extends Column
             foreach ($dataSource['data']['items'] as & $item) {
                 $item[$this->getData('name')] = [
                     'view' => [
-                        'href' => $this->urlBuilder->getUrl('logfiles/display/view').$item['file_name'],
+                        'href' => $this->urlBuilder->getUrl('logfiles/display/view') . 'file_name/'. $item['file_name'],
                         'label' => __('View')
                     ],
                     'download' => [
-                        'href' => $this->urlBuilder->getUrl('logfiles/display/download/').$item['file_name'],
+                        'href' => $this->urlBuilder->getUrl('logfiles/display/download').$item['file_name'],
                         'label' => __('Download')
                     ]
                 ];

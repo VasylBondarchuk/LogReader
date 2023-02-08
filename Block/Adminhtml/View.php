@@ -10,22 +10,26 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Training\LogReader\Configs;
 use Magento\Framework\Escaper;
+use \Magento\Framework\App\Request\Http;
 
 class View extends Template
 {
     private $file;
     private $urlInterface;
     private $escaper;
+    private $request;
 
     public function __construct(
         Context $context,
         File $file,
         UrlInterface $urlInterface,
-        Escaper $escaper
+        Escaper $escaper,
+        Http $request    
     ) {
         $this->file = $file;
         $this->urlInterface = $urlInterface;
         $this->escaper = $escaper;
+        $this->request = $request;
 
         parent::__construct($context);
     }
@@ -45,7 +49,8 @@ class View extends Template
     public function getFileName(): string
     {
         $urlArray = explode("/", $this->getCurrentPageUrl());
-        return $urlArray[7];
+        $fileName= $this->request->getParam('file_name');
+        return $fileName;
     }
 
     public function getFilePath(): string

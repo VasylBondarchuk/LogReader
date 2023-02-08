@@ -4,14 +4,13 @@ last lines of the selected file are displayed by default. Enter qty you want to 
 
 <br><br><hr><br>
 
-<table style="width:80%;font-size:16px;">
+<table style="width:80%;font-size:16px;" >
     <tr>
         <td>File name: <strong><?= $escaper->escapeHtml($block->getFileName());?></strong></td>
         <td>
             <label for="qty"> Qty of last lines: </label>
             <input placeholder="<?= $escaper->escapeHtml($block -> getLastLinesQty());?>" type="number" min="1 " oninput="validity.valid||(value='');" id="qty" name="qty" onchange="updateUrl()">
-        </td>
-        <td><?= $block->displayGoBackButton('logfiles/display/index/', "Back to Grid");?></td>
+        </td>        
     </tr>
 </table>
 <br><hr><br>
@@ -23,7 +22,9 @@ last lines of the selected file are displayed by default. Enter qty you want to 
     function updateUrl()
     {
         var linesQty = document.getElementById('qty').value;
-        var currentPageURL = '<?= $escaper->escapeUrl($block -> getUrl('logfiles/display/view/')).($escaper->escapeHtml($block -> getFileName()));?>';
+        var currentPageURL = 
+                '<?= $escaper->escapeUrl($block -> getUrl('logfiles/display/view')) . 
+                'file_name/' . ($escaper->escapeHtml($block -> getFileName()));?>';
         if(linesQty != 0){
             window.location = currentPageURL + "/" +  linesQty;
         }

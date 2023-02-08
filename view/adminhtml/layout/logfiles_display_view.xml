@@ -1,8 +1,15 @@
 <?xml version="1.0"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <body>
-        <referenceContainer name="content">
-            <block class="Training\LogReader\Block\Adminhtml\View" name="View"  template="Training_LogReader::file_viewer.phtml"/>
-        </referenceContainer>
-    </body>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+<body>
+     <referenceContainer name="content">
+         <uiComponent name="training_logreader_form"/>
+         <block class="Training\LogReader\Block\Adminhtml\View" name="view_file_content" template="Training_LogReader::file_viewer.phtml" />
+     </referenceContainer>
+</body>
 </page>
