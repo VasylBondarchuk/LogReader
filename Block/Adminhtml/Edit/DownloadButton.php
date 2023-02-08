@@ -47,7 +47,7 @@ class DownloadButton extends GenericButton implements ButtonProviderInterface {
         return $this->urlInterface->getUrl('logfiles/display/download'). $this->getFileName();
     }
     
-    public function getFileName(): string
+    private function getFileName(): string
     {        
         $fileName= $this->request->getParam('file_name');        
         return $fileName;
