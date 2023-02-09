@@ -12,8 +12,7 @@
     <dataSource name="training_logreader_list_data_source" component="Magento_Ui/js/grid/provider">
         <settings>
             <updateUrl path="mui/index/render"/>
-        </settings>
-        <aclResource>Tsg_Improvements::resource</aclResource>
+        </settings>        
         <dataProvider class="Training\LogReader\Ui\Component\DataProvider\Grid" name="training_logreader_list_data_source">
             <settings>
                 <requestFieldName>id</requestFieldName>

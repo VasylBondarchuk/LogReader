@@ -9,7 +9,7 @@ use Magento\Framework\View\Result\PageFactory;
 
 class Index extends \Magento\Backend\App\Action
 {
-    const ADMIN_RESOURCE = 'Training_LogReader::logfiles_view'; 
+    const ADMIN_RESOURCE = 'Training_LogReader::view';
     
     protected $resultPageFactory = false;
 
@@ -21,14 +21,8 @@ class Index extends \Magento\Backend\App\Action
 
     public function execute()
     {
-        $resultPage = $this->resultPageFactory->create();
-        $resultPage->setActiveMenu('Training_LogReader::menu');
-        $resultPage->getConfig()->getTitle()->prepend(__('Log Files List '));
+        $resultPage = $this->resultPageFactory->create();        
+        $resultPage->getConfig()->getTitle()->prepend(__('Log Files List '));        
         return $resultPage;
-    }
-
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Training_LogReader::menu');
-    }
+    }    
 }

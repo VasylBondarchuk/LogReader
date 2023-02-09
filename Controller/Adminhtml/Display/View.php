@@ -9,7 +9,7 @@ use Magento\Framework\App\RequestInterface;
 
 class View extends \Magento\Backend\App\Action
 {
-    const ADMIN_RESOURCE = 'Training_LogReader::logfiles_view'; 
+    const ADMIN_RESOURCE = 'Training_LogReader::view';
     
     protected $resultPageFactory = false;
     
@@ -33,12 +33,7 @@ class View extends \Magento\Backend\App\Action
         $resultPage = $this->resultPageFactory->create();
         $resultPage->getConfig()->getTitle()->prepend(__($this->getFileName()));
         return $resultPage;
-    }
-
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Training_LogReader::menu');
-    }
+    }   
     
     private function getFileName(): string
     {        

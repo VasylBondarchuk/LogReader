@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
-        <add id="Training_LogReader::menu" title="Log Reader" module="Training_LogReader" sortOrder="30" resource="Magento_Backend::content"/>
-        <add id="Training_LogReader::menu_submenu_item_1" title="Display log files" module="Training_LogReader" sortOrder="10" parent="Training_LogReader::menu" action="logfiles/display/index" resource="Training_LogReader::menu_submenu_item"/>        
+        <add id="Training_LogReader::menu1" title="Log Reader" module="Training_LogReader" sortOrder="30" resource="Training_LogReader::menu"/>
+        <add id="Training_LogReader::view" title="Display log files" module="Training_LogReader" sortOrder="10" parent="Training_LogReader::menu1" action="logfiles/display/index" resource="Training_LogReader::view"/>        
     </menu>
 </config>

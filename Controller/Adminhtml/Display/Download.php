@@ -15,7 +15,7 @@ use Training\LogReader\Configs;
 
 class Download extends \Magento\Backend\App\Action
 {
-    const ADMIN_RESOURCE = 'Training_LogReader::logfiles_download'; 
+    const ADMIN_RESOURCE = 'Training_LogReader::download';
     
     protected $resultPageFactory = false;
     private $urlInterface;
@@ -67,10 +67,5 @@ class Download extends \Magento\Backend\App\Action
         $this->downloadFile($this->getFilePathFromUrl());
         $resultPage = $this->resultPageFactory->create();
         return $resultPage;
-    }
-
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Training_LogReader::menu');
-    }
+    }    
 }
