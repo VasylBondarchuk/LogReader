@@ -22,7 +22,6 @@ class GenericButton
     {
         $this->context = $context;
     }
-
     
     /**
      * @param string $route

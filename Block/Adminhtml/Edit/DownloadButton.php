@@ -14,8 +14,11 @@ use Magento\Framework\App\RequestInterface;
  */
 class DownloadButton extends GenericButton implements ButtonProviderInterface {
 
-    private $urlInterface;
-    
+    /**
+     * @var UrlInterface
+     */
+    private UrlInterface $urlInterface;
+
     /**
      * @var RequestInterface
      */
@@ -37,22 +40,19 @@ class DownloadButton extends GenericButton implements ButtonProviderInterface {
     public function getButtonData(): array {
         return [
             'label' => __('Download'),
-            'on_click' => sprintf("location.href = '%s';", $this->getCurrentPageUrl()),
-            'class' => 'save',
+            'on_click' => sprintf("location.href = '%s';", $this->getDownloadUrl()),            
             'sort_order' => 10
         ];
     }
 
-    private function getCurrentPageUrl() {
-        return $this->urlInterface->getUrl('logfiles/display/download'). $this->getFileName();
+    private function getDownloadUrl() {
+        return $this->urlInterface->getUrl('logfiles/display/download',
+                        ['file_name' => $this->getFileName()]);
     }
-    
-    private function getFileName(): string
-    {        
-        $fileName= $this->request->getParam('file_name');        
+
+    private function getFileName(): string {
+        $fileName = $this->request->getParam('file_name');
         return $fileName;
     }
-    
-    
 
 }

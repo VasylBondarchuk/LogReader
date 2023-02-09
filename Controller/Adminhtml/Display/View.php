@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types = 1);
 
 namespace Training\LogReader\Controller\Adminhtml\Display;
@@ -10,6 +9,8 @@ use Magento\Framework\App\RequestInterface;
 
 class View extends \Magento\Backend\App\Action
 {
+    const ADMIN_RESOURCE = 'Training_LogReader::logfiles_view'; 
+    
     protected $resultPageFactory = false;
     
     /**

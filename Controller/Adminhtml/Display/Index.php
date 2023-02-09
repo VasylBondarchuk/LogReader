@@ -9,6 +9,8 @@ use Magento\Framework\View\Result\PageFactory;
 
 class Index extends \Magento\Backend\App\Action
 {
+    const ADMIN_RESOURCE = 'Training_LogReader::logfiles_view'; 
+    
     protected $resultPageFactory = false;
 
     public function __construct(Context $context, PageFactory $resultPageFactory)
