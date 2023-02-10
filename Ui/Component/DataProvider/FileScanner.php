@@ -1,28 +1,24 @@
 <?php
-
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Training\LogReader\Ui\Component\DataProvider;
 
 use Magento\Framework\Filesystem\Driver\File;
 
-class FileScanner
-{
+class FileScanner {
+
     private $file;
 
-    public function __construct(File $file)
-    {
+    public function __construct(File $file) {
         $this->file = $file;
     }
 
-    public function getFileName(string $filePath):string
-    {
+    public function getFileName(string $filePath): string {
         $filePathArray = explode(DIRECTORY_SEPARATOR, $filePath);
-        return $filePathArray[count($filePathArray)-1];
+        return $filePathArray[count($filePathArray) - 1];
     }
 
-    public function getFilesInDirectory(string $directoryPath):array
-    {
+    public function getFilesInDirectory(string $directoryPath): array {
         $fileNames = [];
         $content = $this->file->readDirectory($directoryPath);
 
@@ -34,36 +30,33 @@ class FileScanner
         return $fileNames;
     }
 
-    public function getFileSize(string $filePath): string
-    {
+    public function getFileSize(string $filePath): string {
         $result = '';
         $bytes = floatval($this->file->stat($filePath)['size']);
 
         $arBytes = [
-            ["UNIT" => "TB","VALUE" => pow(1024, 4)],
-            ["UNIT" => "GB","VALUE" => pow(1024, 3)],
-            ["UNIT" => "MB","VALUE" => pow(1024, 2)],
-            ["UNIT" => "KB","VALUE" => 1024],
-            ["UNIT" => "B","VALUE" => 1]
+            ["UNIT" => "TB", "VALUE" => pow(1024, 4)],
+            ["UNIT" => "GB", "VALUE" => pow(1024, 3)],
+            ["UNIT" => "MB", "VALUE" => pow(1024, 2)],
+            ["UNIT" => "KB", "VALUE" => 1024],
+            ["UNIT" => "B", "VALUE" => 1]
         ];
 
         foreach ($arBytes as $arItem) {
             if ($bytes >= $arItem['VALUE']) {
                 $result = $bytes / $arItem['VALUE'];
-                $result = str_replace('.', ',', (string)(round($result, 2))) . ' ' . $arItem['UNIT'];
+                $result = str_replace('.', ',', (string) (round($result, 2))) . ' ' . $arItem['UNIT'];
                 break;
             }
         }
-        return $result ? $result : "0 B" ;
+        return $result ? $result : "0 B";
     }
 
-    public function getModificationTime($filePath): string
-    {
+    public function getModificationTime($filePath): string {
         return date("l, dS F, Y, h:ia", $this->file->stat($filePath)['mtime']);
     }
 
-    public function getFilesNumber(string $directoryPath):int
-    {
+    public function getFilesNumber(string $directoryPath): int {
         return count($this->getFilesInDirectory($directoryPath));
     }
 }

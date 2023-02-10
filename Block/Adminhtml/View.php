@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Training\LogReader\Block\Adminhtml;
 
@@ -12,19 +12,19 @@ use Training\LogReader\Configs;
 use Magento\Framework\Escaper;
 use \Magento\Framework\App\Request\Http;
 
-class View extends Template
-{
+class View extends Template {
+
     private $file;
     private $urlInterface;
     private $escaper;
     private $request;
 
     public function __construct(
-        Context $context,
-        File $file,
-        UrlInterface $urlInterface,
-        Escaper $escaper,
-        Http $request    
+            Context $context,
+            File $file,
+            UrlInterface $urlInterface,
+            Escaper $escaper,
+            Http $request
     ) {
         $this->file = $file;
         $this->urlInterface = $urlInterface;
@@ -34,52 +34,63 @@ class View extends Template
         parent::__construct($context);
     }
 
-    public function getCurrentPageUrl()
-    {
+    public function getCurrentPageUrl() {
         return $this->urlInterface->getCurrentUrl();
     }
 
-    public function getLastLinesQty(): int
-    {
-        $urlArray = explode("/", $this->getCurrentPageUrl());
-        $lastLinesQty = (int)$urlArray[count($urlArray)-1];
-        return (is_numeric($lastLinesQty) && $lastLinesQty > 0) ? $lastLinesQty : Configs::DEFAULT_LINES_QTY;
+    public function getLastLinesQty(): int {
+        $lastLinesQty = Configs::DEFAULT_LINES_QTY;        
+        $lastLinesQtyFromUrl = $this->getLastLinesQtyFromUrl();
+        $correctQty = ($lastLinesQtyFromUrl < $this->getTotalLinesQty()) && $lastLinesQtyFromUrl > 0;
+        if($correctQty){            
+              $lastLinesQty = $lastLinesQtyFromUrl;
+        }
+        return $lastLinesQty;
     }
 
-    public function getFileName(): string
-    {
-        $urlArray = explode("/", $this->getCurrentPageUrl());
-        $fileName= $this->request->getParam('file_name');
-        return $fileName;
+    public function getFileName(): string {        
+        return $this->request->getParam('file_name');
+    }
+    
+    public function getLastLinesQtyFromUrl(): int {        
+        return (int)$this->request->getParam('lines_qty');
     }
 
-    public function getFilePath(): string
-    {
+
+    public function getFilePath(): string {
         return Configs::LOG_DIR_PATH . DIRECTORY_SEPARATOR . $this->getFileName();
     }
 
-    public function getFileContent(): string
-    {
-        return $this->file->isReadable($this->getFilePath()) ?
-            $this->file->fileGetContents($this->getFilePath()) : " ";
+    public function getTotalLinesQty(): int {
+        return count($this->getFileContent());        
     }
-
-    public function displayFileContent(): string
-    {
-        $fileContentArray = explode("\n", $this->getFileContent());
-
-        $linesQty = count($fileContentArray) - 1;
-
-        for ($i = 0; $i < $linesQty; $i++) {
-            $fileContentArray[$i] = "<b> Line # ".($i+1)."</b> : ".$fileContentArray[$i];
+    
+     public function getFileContent(): array {
+        $fileContentArray = [];
+        foreach ($this->getFileRows($this->getFilePath()) as $row) {
+            $fileContentArray[] = $row;
         }
-        return implode("<br>", array_slice($fileContentArray, -($this->getLastLinesQty() + 1)));
+        return $fileContentArray;
     }
 
-    public function displayGoBackButton(string $path, string $text): string
+    public function displayFileContent()
     {
-        $escapedUrl = $this->escaper->escapeUrl($this->getUrl($path));
-        return '<button class="primary" onclick="location.href=\''. $escapedUrl .'\'" type="button">'.
-        $text . '</button>';
+        $fileContentArray = $this->getFileContent();
+        $size = count($fileContentArray);
+        $outputHtml = '' ;        
+        for ($i = 0; $i < $this->getLastLinesQty(); $i++) {
+             $outputHtml.= '<b> Line # ' . $size  - $this->getLastLinesQty() + $i + 1 . '</b> : '
+                     . $fileContentArray[$size  - $this->getLastLinesQty() + $i] .'<br />';
+        }        
+        return $outputHtml;
+        
+    }
+
+    private function getFileRows($filename) {
+        $file = fopen($filename, 'r');
+        while (($line = fgets($file)) !== false) {
+            yield $line;
+        }        
+        fclose($file);
     }
 }
