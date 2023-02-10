@@ -40,14 +40,14 @@ class View extends \Magento\Backend\App\Action
     {
         echo $this->getLastLinesQtyFromUrl();
         $resultPage = $this->resultPageFactory->create();
-        $resultPage->getConfig()->getTitle()->prepend(__($this->getFileName()));
+        $resultPage->getConfig()->getTitle()->prepend(__($this->getFileNameFromUrl));
         if ($this->getLastLinesQtyFromUrl()> 1000) {
             $this->messageManager->addErrorMessage(__('The total rows number is exceeded'));
         }
         return $resultPage;
     }   
     
-    private function getFileName(): string
+    private function getFileNameFromUrl(): string
     {        
         $fileName= $this->request->getParam('file_name');        
         return $fileName;
