@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Training\LogReader\Controller\Adminhtml\Display;
 
@@ -10,49 +11,63 @@ use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\App\Response\Http\FileFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\ResultFactory;
 use Training\LogReader\Model\LogFile;
 
-class Download extends \Magento\Backend\App\Action
-{
+class Download extends \Magento\Backend\App\Action {
+
     const ADMIN_RESOURCE = 'Training_LogReader::download';
-    
+
     protected $resultPageFactory = false;
+    protected $resultFactory;
     private $urlInterface;
     private $driverFile;
     private $fileFactory;
     private LogFile $logFileModel;
+
     /**
      * @var RequestInterface
      */
     private RequestInterface $request;
 
     public function __construct(
-        Context $context,
-        PageFactory $resultPageFactory,
-        UrlInterface $urlInterface,
-        File $driverFile,
-        FileFactory $fileFactory,
-        LogFile $logFileModel,
-        RequestInterface $request    
-    ) {        
+            Context $context,
+            PageFactory $resultPageFactory,
+            ResultFactory $resultFactory,
+            UrlInterface $urlInterface,
+            File $driverFile,
+            FileFactory $fileFactory,
+            LogFile $logFileModel,
+            RequestInterface $request
+    ) {
         $this->resultPageFactory = $resultPageFactory;
+        $this->resultFactory = $resultFactory;
         $this->urlInterface = $urlInterface;
         $this->driverFile = $driverFile;
         $this->fileFactory = $fileFactory;
         $this->request = $request;
         $this->logFileModel = $logFileModel;
         parent::__construct($context);
-    } 
+    }
 
-    public function execute()
-    { 
-        $this->downloadFile($this->logFileModel->getFilePath());        
-    } 
-    
-    public function downloadFile(string $filePath)
-    {
-        $fileName = $this->logFileModel->getFileNameFromUrl($filePath) . '_' . date('Y/m/d H:i:s');
-        $fileContent = $this->driverFile->fileGetContents($filePath);
-        $this->fileFactory->create($fileName, $fileContent, DirectoryList::ROOT, 'application/octet-stream');
+    public function execute() {
+
+        $this->downloadFile($this->logFileModel->getFilePath());
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        $resultRedirect->setPath('*/*/index');
+        return $resultRedirect;
+    }
+
+    // Download log file
+    public function downloadFile(string $filePath) {
+        try {
+            $downloadedFileName = $this->logFileModel->getFileNameFromUrl($filePath) . '_' . date('Y/m/d H:i:s');
+            $fileContent = $this->driverFile->fileGetContents($filePath);
+            $this->fileFactory->create($downloadedFileName, $fileContent, DirectoryList::ROOT, 'application/octet-stream');
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage(
+                    __('An error %1 occurred while downloading the file.', '"' . $e->getMessage() . '"')
+            );
+        }
     }
 }
