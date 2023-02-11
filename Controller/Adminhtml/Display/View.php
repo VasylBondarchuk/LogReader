@@ -37,10 +37,9 @@ class View extends \Magento\Backend\App\Action
         parent::__construct($context);
     }
     public function execute()
-    {
-        echo $this->getLastLinesQtyFromUrl();
+    {        
         $resultPage = $this->resultPageFactory->create();
-        $resultPage->getConfig()->getTitle()->prepend(__($this->getFileNameFromUrl));
+        $resultPage->getConfig()->getTitle()->prepend(__($this->getFileNameFromUrl()));
         if ($this->getLastLinesQtyFromUrl()> 1000) {
             $this->messageManager->addErrorMessage(__('The total rows number is exceeded'));
         }
