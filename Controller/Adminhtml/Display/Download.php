@@ -66,7 +66,7 @@ class Download extends \Magento\Backend\App\Action {
             $this->fileFactory->create($downloadedFileName, $fileContent, DirectoryList::ROOT, 'application/octet-stream');
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage(
-                    __('An error %1 occurred while downloading the file.', '"' . $e->getMessage() . '"')
+                    __('An error %1 occurred while downloading the file %2.', '"' . $e->getMessage() . '"', $filePath)
             );
         }
     }
