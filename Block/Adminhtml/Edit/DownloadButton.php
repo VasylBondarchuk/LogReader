@@ -41,7 +41,7 @@ class DownloadButton extends GenericButton implements ButtonProviderInterface {
         return [
             'label' => __('Download'),
             'on_click' => sprintf("location.href = '%s';", $this->getDownloadUrl()),            
-            'sort_order' => 10
+            'sort_order' => 30
         ];
     }
 

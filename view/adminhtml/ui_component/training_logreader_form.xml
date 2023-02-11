@@ -20,7 +20,14 @@
                 <item name="label" xsi:type="string" translate="true">Back to Grid</item>
                 <item name="class" xsi:type="string">primary</item>
                 <item name="url" xsi:type="string">*/*/</item>
-            </item>            
+            </item>
+            
+            <item name="save" xsi:type="array">
+                <item name="name" xsi:type="string">save</item>
+                <item name="label" xsi:type="string" translate="true">Display</item>
+                <item name="class" xsi:type="string">primary</item>
+                <item name="url" xsi:type="string">*/*/</item>
+            </item>             
         </item> 
     </argument>
     
@@ -34,8 +41,8 @@
         <argument name="dataProvider" xsi:type="configurableObject">
             <argument name="class" xsi:type="string">Training\LogReader\Ui\Component\DataProvider\Form</argument>
             <argument name="name" xsi:type="string">training_logreader_form_data_source</argument>
-            <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
-            <argument name="requestFieldName" xsi:type="string">id</argument>
+            <argument name="primaryFieldName" xsi:type="string">file_name</argument>
+            <argument name="requestFieldName" xsi:type="string">lines_qty</argument>
         </argument>
         <argument name="data" xsi:type="array">
             <item name="js_config" xsi:type="array">
@@ -43,4 +50,28 @@
             </item>
         </argument>
     </dataSource>
+    
+    <fieldset name="general">
+        <settings>
+            <label/>
+            <dataScope>data</dataScope>
+        </settings> 
+        <field name="lines_qty" sortOrder="10" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">training_logreader_form_data_source</item>
+                </item>
+            </argument>
+            <settings>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>text</dataType>
+                <label translate="true">Lines Qty</label>
+                <dataScope>lines_qty</dataScope>
+                <visible>true</visible>
+            </settings>
+        </field>  
+    </fieldset>
+    
 </form>

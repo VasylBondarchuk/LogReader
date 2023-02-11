@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types = 1);
 
 namespace Training\LogReader\Controller\Adminhtml\Display;
@@ -11,7 +10,7 @@ use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\App\Response\Http\FileFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\RequestInterface;
-use Training\LogReader\Configs;
+use Training\LogReader\Model\LogFile;
 
 class Download extends \Magento\Backend\App\Action
 {
@@ -21,6 +20,7 @@ class Download extends \Magento\Backend\App\Action
     private $urlInterface;
     private $driverFile;
     private $fileFactory;
+    private LogFile $logFileModel;
     /**
      * @var RequestInterface
      */
@@ -32,40 +32,27 @@ class Download extends \Magento\Backend\App\Action
         UrlInterface $urlInterface,
         File $driverFile,
         FileFactory $fileFactory,
+        LogFile $logFileModel,
         RequestInterface $request    
-    ) {
-        parent::__construct($context);
+    ) {        
         $this->resultPageFactory = $resultPageFactory;
         $this->urlInterface = $urlInterface;
         $this->driverFile = $driverFile;
         $this->fileFactory = $fileFactory;
         $this->request = $request;
-    }
-
-    public function getFilePathFromUrl()
-    {
-        $urlArray = explode("/", $this->urlInterface->getCurrentUrl());
-        $fileName = $urlArray[count($urlArray)-1];
-        return (Configs::LOG_DIR_PATH) . DIRECTORY_SEPARATOR . $fileName;
-    }
-
-    private function getFileName(): string
-    {        
-        $fileName= $this->request->getParam('file_name');        
-        return $fileName;
-    }
-
-    public function downloadFile(string $filePath)
-    {
-        $fileName = $this->getFileName($filePath);
-        $fileContent = $this->driverFile->fileGetContents($filePath);
-        $this->fileFactory->create($fileName, $fileContent, DirectoryList::ROOT, 'application/octet-stream');
-    }
+        $this->logFileModel = $logFileModel;
+        parent::__construct($context);
+    } 
 
     public function execute()
     { 
-        $this->downloadFile($this->getFilePathFromUrl());
-        $resultPage = $this->resultPageFactory->create();
-        return $resultPage;
-    }    
+        $this->downloadFile($this->logFileModel->getFilePath());        
+    } 
+    
+    public function downloadFile(string $filePath)
+    {
+        $fileName = $this->logFileModel->getFileNameFromUrl($filePath) . '_' . date('Y/m/d H:i:s');
+        $fileContent = $this->driverFile->fileGetContents($filePath);
+        $this->fileFactory->create($fileName, $fileContent, DirectoryList::ROOT, 'application/octet-stream');
+    }
 }
