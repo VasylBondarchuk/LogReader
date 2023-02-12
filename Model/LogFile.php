@@ -4,6 +4,9 @@ namespace Training\LogReader\Model;
 
 use Training\LogReader\Configs;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\App\Response\Http\FileFactory;
+use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Description of LogFile
@@ -13,11 +16,17 @@ use Magento\Framework\App\RequestInterface;
 class LogFile {
 
     private RequestInterface $request;
+    private File $driverFile;
+    private FileFactory $fileFactory;
 
     public function __construct(
-            RequestInterface $request
+            RequestInterface $request,
+            File $driverFile,
+            FileFactory $fileFactory,
     ) {
         $this->request = $request;
+        $this->driverFile = $driverFile;
+        $this->fileFactory = $fileFactory;
     }
 
     public function getFileNameFromUrl(): string {
@@ -61,6 +70,5 @@ class LogFile {
 
     public function getFileTotalLinesQty(): int {
         return count($this->getFileContent());
-    }
-
+    }    
 }
