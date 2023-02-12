@@ -14,8 +14,15 @@ class Download implements HttpGetActionInterface {
     // Restrict the access to the controller
     const ADMIN_RESOURCE = 'Training_LogReader::download';
 
-           
-    private ResultFactory $resultFactory; 
+    /**
+     * 
+     * @var ResultFactory
+     */       
+    private ResultFactory $resultFactory;
+    /**
+     * 
+     * @var LogFile
+     */
     private LogFile $logFileModel;
 
     /**

@@ -74,16 +74,20 @@ class View extends Template {
     }
 
     public function displayFileContent()
-    {
-        $fileContentArray = $this->getFileContent();
-        $size = count($fileContentArray);
-        $outputHtml = '' ;        
-        for ($i = 0; $i < $this->getLastLinesQty(); $i++) {
-             $outputHtml.= '<b> Line # ' . $size  - $this->getLastLinesQty() + $i + 1 . '</b> : '
-                     . $fileContentArray[$size  - $this->getLastLinesQty() + $i] .'<br />';
+    {        
+        $lastLinesQty = $this->getLastLinesQtyFromUrl() !== 0
+                ? $this->getLastLinesQtyFromUrl()
+                : 10;
+        $fileContentArray = array_slice($this->getFileContent(), -$lastLinesQty);               
+        $outputHtml = '' ;
+        $totalLinesQty = count($this->getFileContent());
+        $firstDisplayedRowNumber =  $totalLinesQty - $lastLinesQty + 1;      
+        foreach($fileContentArray as $index => $row ) {
+            $lineNumber = $firstDisplayedRowNumber + $index;
+            $format = "%s $lineNumber $row %s";
+            $outputHtml.= sprintf($format,'Line #','<br/>');
         }        
-        return $outputHtml;
-        
+        return $outputHtml; 
     }
 
     private function getFileRows($filename) {
@@ -92,5 +96,6 @@ class View extends Template {
             yield $line;
         }        
         fclose($file);
-    }
+    }   
+    
 }
