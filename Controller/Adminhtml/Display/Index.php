@@ -4,25 +4,29 @@ declare(strict_types = 1);
 
 namespace Training\LogReader\Controller\Adminhtml\Display;
 
-use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 
-class Index extends \Magento\Backend\App\Action
+class Index implements HttpGetActionInterface
 {
+    // Restrict the access to the controller
     const ADMIN_RESOURCE = 'Training_LogReader::view';
     
-    protected $resultPageFactory = false;
+    /**
+     * @var PageFactory
+     */
+    private PageFactory $pageFactory;    
 
-    public function __construct(Context $context, PageFactory $resultPageFactory)
+    public function __construct(PageFactory $pageFactory)
     {
-        parent::__construct($context);
-        $this->resultPageFactory = $resultPageFactory;
+        
+        $this->pageFactory = $pageFactory;        
     }
 
     public function execute()
     {
-        $resultPage = $this->resultPageFactory->create();        
-        $resultPage->getConfig()->getTitle()->prepend(__('Log Files List '));        
-        return $resultPage;
+        $page = $this->pageFactory->create();
+        $page->getConfig()->getTitle()->prepend(__('Log Files List'));
+        return $page; 
     }    
 }

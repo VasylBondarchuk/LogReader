@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Training\LogReader\Controller\Adminhtml\Display;
 
-use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\Filesystem\Driver\File;
@@ -14,11 +14,15 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Training\LogReader\Model\LogFile;
 
-class Download extends \Magento\Backend\App\Action {
+class Download implements HttpGetActionInterface {
 
+    // Restrict the access to the controller
     const ADMIN_RESOURCE = 'Training_LogReader::download';
 
-    protected $resultPageFactory = false;
+    /**
+     * @var PageFactory
+     */
+    private PageFactory $pageFactory;
     protected $resultFactory;
     private $urlInterface;
     private $driverFile;
@@ -31,8 +35,7 @@ class Download extends \Magento\Backend\App\Action {
     private RequestInterface $request;
 
     public function __construct(
-            Context $context,
-            PageFactory $resultPageFactory,
+            PageFactory $pageFactory, 
             ResultFactory $resultFactory,
             UrlInterface $urlInterface,
             File $driverFile,
@@ -40,22 +43,18 @@ class Download extends \Magento\Backend\App\Action {
             LogFile $logFileModel,
             RequestInterface $request
     ) {
-        $this->resultPageFactory = $resultPageFactory;
+        $this->pageFactory = $pageFactory;
         $this->resultFactory = $resultFactory;
         $this->urlInterface = $urlInterface;
         $this->driverFile = $driverFile;
         $this->fileFactory = $fileFactory;
         $this->request = $request;
-        $this->logFileModel = $logFileModel;
-        parent::__construct($context);
+        $this->logFileModel = $logFileModel;        
     }
 
     public function execute() {
 
-        $this->downloadFile($this->logFileModel->getFilePath());
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        $resultRedirect->setPath('*/*/index');
-        return $resultRedirect;
+        $this->downloadFile($this->logFileModel->getFilePath());       
     }
 
     // Download log file
@@ -70,4 +69,5 @@ class Download extends \Magento\Backend\App\Action {
             );
         }
     }
+
 }
