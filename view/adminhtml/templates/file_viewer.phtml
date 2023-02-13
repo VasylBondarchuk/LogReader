@@ -1,10 +1,12 @@
-<?=$escaper->escapeHtml(Training\LogReader\Configs::DEFAULT_LINES_QTY." ");?>
+<b><?=$escaper->escapeHtml($block->getDefaultLastLinesQty());?></b>
 
-last lines of the selected file are displayed by default. Enter qty you want to display into the input field and press "Enter" key.
+last lines of the selected file are displayed by default.
+<br>
+Enter qty you want to display into the input field and press "Display" button.
 
-<br><br><hr><br>
+<br /><br /><hr><br />
 Total rows qty:
-<?=$block->getTotalLinesQty();?>
+<b><?=$block->getTotalLinesQty();?></b>
 <br><br><hr><br>
 
 File content:
