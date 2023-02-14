@@ -123,14 +123,11 @@ class LogFile {
      * 
      * @param string $filename
      */
-    private function getFileLinesGenerator(string $filename) {        
-        try {
-            $file = $this->file->fileOpen($filename, 'r');
-            while (($line = fgets($file)) !== false) {
-                yield $line;
-            }
-        } catch (Exception $e) {
-            echo 'Exception: ', $e->getMessage(), "\n";            
+    private function getFileLinesGenerator(string $filename) {
+
+        $file = $this->file->fileOpen($filename, 'r');
+        while (($line = fgets($file)) !== false) {
+            yield $line;
         }
         $this->file->fileClose($file);
     }
@@ -219,7 +216,7 @@ class LogFile {
      * @param string $filePath
      * @return string
      */
-    public function getFileName(string $filePath): string {        
+    public function getFileName(string $filePath): string {
         return basename($filePath);
     }
 
@@ -245,10 +242,10 @@ class LogFile {
      * @param string $lineSeparator
      * @return string
      */
-    public function getFormattedLine(int $lineNumber, string $lineText, string $lineSeparator = '<br />'): string {       
-        
+    public function getFormattedLine(int $lineNumber, string $lineText, string $lineSeparator = '<br />'): string {
+
         $outPutFormat = "%s $lineText %s";
-        return sprintf($outPutFormat, $this->getLinePrefix($lineNumber), $lineSeparator); 
+        return sprintf($outPutFormat, $this->getLinePrefix($lineNumber), $lineSeparator);
     }
 
     /**
@@ -281,8 +278,8 @@ class LogFile {
      * @return bool
      */
     public function isLogFileText(): bool {
-        return $this->isLogFileExists() ?
-                explode("/", mime_content_type($this->getFilePath()))[0] === 'text'
+        return $this->isLogFileExists()
+                ? explode("/", mime_content_type($this->getFilePath()))[0] === 'text'
                 : false;
     }
 
@@ -290,25 +287,25 @@ class LogFile {
      * 
      * @return bool
      */
-    public function isLogFileExists(): bool {        
+    public function isLogFileExists(): bool {
         return $this->file->isExists($this->getFilePath());
     }
-    
+
     /**
      * 
      * @return bool
      */
-    public function isLogFileReadable(): bool {        
-        return $this->isLogFileExists() ?
-                $this->file->isReadable($this->getFilePath())
-                : false;        
+    public function isLogFileReadable(): bool {
+        return $this->isLogFileExists()
+                ? $this->file->isReadable($this->getFilePath())
+                : false;
     }
-    
+
     /**
      * 
      * @return bool
      */
-    public function isLogFileValid() : bool {
+    public function isLogFileValid(): bool {
         return $this->isLogFileExists() &&
                 $this->isLogFileReadable() &&
                 $this->isLogFileText();

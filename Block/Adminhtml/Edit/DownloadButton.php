@@ -7,7 +7,8 @@ namespace Training\LogReader\Block\Adminhtml\Edit;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Backend\Block\Widget\Context;
-use Magento\Framework\App\RequestInterface;
+use Training\LogReader\Model\LogFile;
+use Training\LogReader\Configs;
 
 /**
  * Provides data for 'Back' button
@@ -23,14 +24,16 @@ class DownloadButton extends GenericButton implements ButtonProviderInterface {
      * @var RequestInterface
      */
     private RequestInterface $request;
+    
+    private LogFile $logFileModel;
 
     public function __construct(
             Context $context,
-            UrlInterface $urlInterface,
-            RequestInterface $request
+            UrlInterface $urlInterface,           
+            LogFile $logFileModel
     ) {
-        $this->urlInterface = $urlInterface;
-        $this->request = $request;
+        $this->urlInterface = $urlInterface;       
+        $this->logFileModel = $logFileModel;
         parent::__construct($context);
     }
 
@@ -47,12 +50,6 @@ class DownloadButton extends GenericButton implements ButtonProviderInterface {
 
     private function getDownloadUrl() {
         return $this->urlInterface->getUrl('logfiles/display/download',
-                        ['file_name' => $this->getFileName()]);
-    }
-
-    private function getFileName(): string {
-        $fileName = $this->request->getParam('file_name');
-        return $fileName;
-    }
-
+                        [Configs::FILE_NAME_REQUEST_FIELD => $this->logFileModel->getFileNameFromUrl()]);
+    } 
 }
