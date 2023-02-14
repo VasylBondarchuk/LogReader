@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
--->
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/Ui/etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
@@ -42,7 +36,7 @@
             <argument name="class" xsi:type="string">Training\LogReader\Ui\Component\DataProvider\Form</argument>
             <argument name="name" xsi:type="string">training_logreader_form_data_source</argument>
             <argument name="primaryFieldName" xsi:type="string">file_name</argument>
-            <argument name="requestFieldName" xsi:type="string">lines_qty</argument>
+            <argument name="requestFieldName" xsi:type="string">file_name</argument>
         </argument>
         <argument name="data" xsi:type="array">
             <item name="js_config" xsi:type="array">
@@ -55,12 +49,47 @@
         <settings>
             <label/>
             <dataScope>data</dataScope>
-        </settings> 
-        <field name="lines_qty" sortOrder="10" formElement="input">
+        </settings>
+        
+        <field name="file_name" formElement="input" sortOrder="10">
+            <settings>
+                <elementTmpl>ui/form/element/text</elementTmpl>
+                <label translate="true">File Name</label>
+                <dataScope>file_name</dataScope>                
+            </settings>
+        </field>        
+        
+        <field name="file_size" formElement="input" sortOrder="20">
+            <settings>
+                <elementTmpl>ui/form/element/text</elementTmpl>
+                <label translate="true">File Size</label>
+                <dataScope>file_size</dataScope>                
+            </settings>
+        </field>
+        
+        <field name="modified_at" formElement="input" sortOrder="30">
+            <settings>
+                <elementTmpl>ui/form/element/text</elementTmpl>
+                <label translate="true">Modified At</label>
+                <dataScope>modified_at</dataScope>                
+            </settings>
+        </field> 
+        
+        <field name="total_lines_qty" formElement="input" sortOrder="40">
+            <settings>
+                <elementTmpl>ui/form/element/text</elementTmpl>
+                <label translate="true">Total lines qty</label>
+                <dataScope>total_lines_qty</dataScope>                
+            </settings>
+        </field>
+            
+        <field name="lines_qty" sortOrder="50" formElement="input">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="source" xsi:type="string">training_logreader_form_data_source</item>
-                </item>
+                    <item name="notice" xsi:type="string" translate="true">
+                        Enter last lines qty you want to be displayed into the input field and press "Display" button.</item>  
+                </item>    
             </argument>
             <settings>
                 <validation>
@@ -71,7 +100,12 @@
                 <dataScope>lines_qty</dataScope>
                 <visible>true</visible>
             </settings>
-        </field>  
+        </field>
+        
+        <htmlContent name="file_content">       
+            <block class="Training\LogReader\Block\Adminhtml\View" name="view_file_content" template="Training_LogReader::file_viewer.phtml"/>       
+        </htmlContent>
+          
     </fieldset>
     
 </form>

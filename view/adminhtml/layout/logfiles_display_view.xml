@@ -8,8 +8,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
 <body>
      <referenceContainer name="content">
-         <uiComponent name="training_logreader_form"/>
-         <block class="Training\LogReader\Block\Adminhtml\View" name="view_file_content" template="Training_LogReader::file_viewer.phtml" />
+         <uiComponent name="training_logreader_form"/>                  
      </referenceContainer>
 </body>
 </page>

@@ -1,14 +1,3 @@
-<b><?=$escaper->escapeHtml($block->getDefaultLastLinesQty());?></b>
-
-last lines of the selected file are displayed by default.
-<br>
-Enter qty you want to display into the input field and press "Display" button.
-
-<br /><br /><hr><br />
-Total rows qty:
-<b><?=$block->getTotalLinesQty();?></b>
-<br><br><hr><br>
-
-File content:
-<br><br>
-<?=$block->displayFileContent();?>
+<b>File content:</b>
+<br /><br />
+<?=$block->displayFileContentHtml();?>
