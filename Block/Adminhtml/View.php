@@ -30,14 +30,20 @@ class View extends Template {
     }    
    
 
+    /**
+     * Display log file content in web-browser
+     * 
+     * @return string
+     */
     public function displayFileContentHtml() : string    {          
         
         $firstDisplayedLineNumber =  $this->logFileModel->getFileTotalLinesQty() - $this->getLastLinesQty() + 1;
         $outputHtml = '' ; 
         foreach($this->logFileModel->getFileContentArray() as $lineIndex => $lineText) {
             $lineNumber = $firstDisplayedLineNumber + $lineIndex;                        
-            $outputHtml.= $this->logFileModel->getFormattedLine($lineNumber, $lineText, '<br />');                    
-        }        
+            $outputHtml.= $this->logFileModel->getFormattedLine($lineNumber, $lineText);                    
+        }
+        
         return $outputHtml; 
     }
 }

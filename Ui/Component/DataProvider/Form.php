@@ -32,8 +32,7 @@ class Form extends AbstractDataProvider {
                 'file_size' => $this->logFileModel->getFileSize($this->logFileModel->getFilePath()),
                 'modified_at' => $this->logFileModel->getModificationTime($this->logFileModel->getFilePath()),
                 'total_lines_qty' => $this->logFileModel->getFileTotalLinesQty(),
-                'lines_qty' => $this->logFileModel->getLastLinesQty(),
-                'file_content' => '',
+                'lines_qty' => $this->logFileModel->getLastLinesQty()                
             ]
         ];
         return $result;

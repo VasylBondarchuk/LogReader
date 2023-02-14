@@ -16,6 +16,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
  * @author vasyl
  */
 class LogFile {
+
     /**
      * 
      * @var RequestInterface
@@ -87,9 +88,7 @@ class LogFile {
      */
     public function getDefaultLastLinesQty(): int {
         return $this->isLastLinesQtyValid(
-                $this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE))
-                ? $this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE)
-                : Configs::DEFAULT_LINES_QTY;
+                        $this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE)) ? (int) $this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE) : Configs::DEFAULT_LINES_QTY;
     }
 
     /**
@@ -124,12 +123,16 @@ class LogFile {
      * 
      * @param string $filename
      */
-    private function getFileLinesGenerator(string $filename) {
-        $file = fopen($filename, 'r');
-        while (($line = fgets($file)) !== false) {
-            yield $line;
+    private function getFileLinesGenerator(string $filename) {        
+        try {
+            $file = $this->file->fileOpen($filename, 'r');
+            while (($line = fgets($file)) !== false) {
+                yield $line;
+            }
+        } catch (Exception $e) {
+            echo 'Exception: ', $e->getMessage(), "\n";            
         }
-        fclose($file);
+        $this->file->fileClose($file);
     }
 
     /**
@@ -216,9 +219,8 @@ class LogFile {
      * @param string $filePath
      * @return string
      */
-    public function getFileName(string $filePath): string {
-        $filePathArray = explode(DIRECTORY_SEPARATOR, $filePath);
-        return $filePathArray[count($filePathArray) - 1];
+    public function getFileName(string $filePath): string {        
+        return basename($filePath);
     }
 
     /**
@@ -236,22 +238,80 @@ class LogFile {
         return $outputHtml;
     }
 
-    public function getFormattedLine(int $lineNumber, string $lineText, string $lineSeparator): string {
-
+    /**
+     * 
+     * @param int $lineNumber
+     * @param string $lineText
+     * @param string $lineSeparator
+     * @return string
+     */
+    public function getFormattedLine(int $lineNumber, string $lineText, string $lineSeparator = '<br />'): string {       
+        
         $outPutFormat = "%s $lineText %s";
-        return sprintf($outPutFormat, $this->getLinePrefix($lineNumber), $lineSeparator);
+        return sprintf($outPutFormat, $this->getLinePrefix($lineNumber), $lineSeparator); 
     }
 
+    /**
+     * 
+     * @param int $lineNumber
+     * @return string|null
+     */
     private function getLinePrefix(int $lineNumber): ?string {
         return $this->addLineNumber() ? '<b>Line #' . $lineNumber . '</b>' : '';
     }
 
+    /**
+     * 
+     * @return array
+     */
     public function getFileContentArray(): array {
         return array_slice($this->getFileContent(), -$this->getLastLinesQty());
     }
 
+    /**
+     * 
+     * @return bool
+     */
     private function addLineNumber(): bool {
         return (bool) $this->scopeConfig->getValue(Configs::ADD_LINES_NUMBER_CONFIGS_PATH, ScopeInterface::SCOPE_STORE);
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    public function isLogFileText(): bool {
+        return $this->isLogFileExists() ?
+                explode("/", mime_content_type($this->getFilePath()))[0] === 'text'
+                : false;
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    public function isLogFileExists(): bool {        
+        return $this->file->isExists($this->getFilePath());
+    }
+    
+    /**
+     * 
+     * @return bool
+     */
+    public function isLogFileReadable(): bool {        
+        return $this->isLogFileExists() ?
+                $this->file->isReadable($this->getFilePath())
+                : false;        
+    }
+    
+    /**
+     * 
+     * @return bool
+     */
+    public function isLogFileValid() : bool {
+        return $this->isLogFileExists() &&
+                $this->isLogFileReadable() &&
+                $this->isLogFileText();
     }
 
 }
