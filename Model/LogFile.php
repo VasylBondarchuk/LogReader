@@ -130,7 +130,7 @@ class LogFile {
             yield $line;
         }
         $this->file->fileClose($file);
-    }
+    } 
 
     /**
      * 
@@ -138,6 +138,7 @@ class LogFile {
      */
     public function getFileTotalLinesQty(): int {
         return count($this->getFileContent());
+        return 1;
     }
 
     /**
@@ -262,7 +263,18 @@ class LogFile {
      * @return array
      */
     public function getFileContentArray(): array {
-        return array_slice($this->getFileContent(), -$this->getLastLinesQty());
+        $resource = $this->file->fileOpen($this->getFilePath(),'r');
+        // Real maximum length of your records
+        $maxLineLength = 1000; 
+        // Moves cursor back from the end of file
+        fseek($resource, -$maxLineLength * $this->getLastLinesQty(), SEEK_END);  
+        $res = [];
+        while (($buffer = fgets($resource, $maxLineLength)) !== false) {
+            $res[] = $buffer;
+        }
+        $this->file->fileClose($resource);
+        //print_r($res);exit;
+        return array_slice($res, -$this->getLastLinesQty());
     }
 
     /**

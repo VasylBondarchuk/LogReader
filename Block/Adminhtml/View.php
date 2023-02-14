@@ -35,9 +35,9 @@ class View extends Template {
      * 
      * @return string
      */
-    public function displayFileContentHtml() : string    {          
+    public function displayFileContentHtml() : string    {
         
-        $firstDisplayedLineNumber =  $this->logFileModel->getFileTotalLinesQty() - $this->getLastLinesQty() + 1;
+        $firstDisplayedLineNumber =  $this->logFileModel->getFileTotalLinesQty() - $this->logFileModel->getLastLinesQty() + 1;       
         $outputHtml = '' ; 
         foreach($this->logFileModel->getFileContentArray() as $lineIndex => $lineText) {
             $lineNumber = $firstDisplayedLineNumber + $lineIndex;                        

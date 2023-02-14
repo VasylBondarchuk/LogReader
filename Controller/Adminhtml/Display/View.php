@@ -70,7 +70,7 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
             return $resultRedirect;
         } 
         
-        $this->validatelinesQtyInput();
+        //$this->validatelinesQtyInput();
         $page = $this->pageFactory->create();
         $page->getConfig()->getTitle()->prepend(__($this->logFileModel->getFileNameFromUrl()));
         return $page;
