@@ -70,17 +70,16 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
             return $resultRedirect;
         } 
         
-        //$this->validatelinesQtyInput();
+        $this->validatelinesQtyInput();
         $page = $this->pageFactory->create();
         $page->getConfig()->getTitle()->prepend(__($this->logFileModel->getFileNameFromUrl()));
         return $page;
     }
 
     /**
-     * @param $post
-     * @return void
-     * @throws LocalizedException
-     */
+     * Validates user input of lines to read number
+     *  
+     */    
     private function validatelinesQtyInput() {
         if ($this->request->getPostValue()) {
             if ($this->logFileModel->getLastLinesQtyFromUrl() > $this->logFileModel->getFileTotalLinesQty()) {
@@ -94,6 +93,7 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
 
     /**
      * 
+     * Validates log file before show its content 
      */
     private function validateLogFile() {
         if (!$this->logFileModel->isLogFileExists()) {

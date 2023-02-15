@@ -82,6 +82,7 @@
                 <dataScope>total_lines_qty</dataScope>                
             </settings>
         </field>
+        
             
         <field name="lines_qty" sortOrder="50" formElement="input">
             <argument name="data" xsi:type="array">
@@ -103,7 +104,7 @@
         </field>
         
         <htmlContent name="file_content">       
-            <block class="Training\LogReader\Block\Adminhtml\View" name="view_file_content" template="Training_LogReader::file_viewer.phtml"/>       
+            <block class="Training\LogReader\Block\Adminhtml\DisplayFileContent" name="view_file_content" template="Training_LogReader::file_viewer.phtml"/>       
         </htmlContent>
           
     </fieldset>

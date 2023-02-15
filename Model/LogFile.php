@@ -73,7 +73,7 @@ class LogFile {
      * @return int
      */
     public function getLastLinesQty(): int {
-        $lastLinesQty = $this->getDefaultLastLinesQty();
+        $lastLinesQty = $this->getValidDefaultLastLinesQty();
         $lastLinesQtyFromUrl = $this->getLastLinesQtyFromUrl();
         $correctQty = ($lastLinesQtyFromUrl < $this->getFileTotalLinesQty()) && $lastLinesQtyFromUrl > 0;
         if ($correctQty) {
@@ -86,9 +86,11 @@ class LogFile {
      * 
      * @return int
      */
-    public function getDefaultLastLinesQty(): int {
+    public function getValidDefaultLastLinesQty(): int {
         return $this->isLastLinesQtyValid(
-                        $this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE)) ? (int) $this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE) : Configs::DEFAULT_LINES_QTY;
+                        $this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE))
+                ? (int) $this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE)
+                : Configs::DEFAULT_LINES_QTY;
     }
 
     /**
@@ -109,36 +111,13 @@ class LogFile {
 
     /**
      * 
-     * @return array
-     */
-    public function getFileContent(): array {
-        $fileContentArray = [];
-        foreach ($this->getFileLinesGenerator($this->getFilePath()) as $row) {
-            $fileContentArray[] = $row;
-        }
-        return $fileContentArray;
-    }
-
-    /**
-     * 
-     * @param string $filename
-     */
-    private function getFileLinesGenerator(string $filename) {
-
-        $file = $this->file->fileOpen($filename, 'r');
-        while (($line = fgets($file)) !== false) {
-            yield $line;
-        }
-        $this->file->fileClose($file);
-    } 
-
-    /**
-     * 
      * @return int
      */
     public function getFileTotalLinesQty(): int {
-        return count($this->getFileContent());
-        return 1;
+        $file = new \SplFileObject($this->getFilePath());
+        $file->seek($file->getSize());
+        $totalLines = $file->key() + 1;
+        return $totalLines;
     }
 
     /**
@@ -161,7 +140,7 @@ class LogFile {
 
         foreach ($content as $item) {
             if ($this->file->isFile($item)) {
-                $fileNames[] = $this->getFileName($item);
+                $fileNames[] = \basename($item);
             }
         }
         return $fileNames;
@@ -209,93 +188,49 @@ class LogFile {
      * @return int
      */
     public function getFilesNumber(string $directoryPath): int {
-        return count($this->getFilesInDirectory($directoryPath));
-    }
-
+        return \count($this->getFilesInDirectory($directoryPath));
+    } 
+    
     /**
-     * 
-     * @param string $filePath
-     * @return string
-     */
-    public function getFileName(string $filePath): string {
-        return basename($filePath);
-    }
-
-    /**
-     * 
-     * @return string
-     */
-    public function displayFileContent(): string {
-
-        $firstDisplayedLineNumber = $this->getFileTotalLinesQty() - $this->getLastLinesQty() + 1;
-        $outputHtml = '';
-        foreach ($this->getFileContentArray() as $lineIndex => $lineText) {
-            $lineNumber = $firstDisplayedLineNumber + $lineIndex;
-            $outputHtml .= $this->getFormattedLine($lineNumber, $lineText);
-        }
-        return $outputHtml;
-    }
-
-    /**
-     * 
-     * @param int $lineNumber
-     * @param string $lineText
-     * @param string $lineSeparator
-     * @return string
-     */
-    public function getFormattedLine(int $lineNumber, string $lineText, string $lineSeparator = '<br />'): string {
-
-        $outPutFormat = "%s $lineText %s";
-        return sprintf($outPutFormat, $this->getLinePrefix($lineNumber), $lineSeparator);
-    }
-
-    /**
+     * Adds a prefix to the line showing the line number depending on a user configuration
      * 
      * @param int $lineNumber
      * @return string|null
      */
-    private function getLinePrefix(int $lineNumber): ?string {
-        return $this->addLineNumber() ? '<b>Line #' . $lineNumber . '</b>' : '';
+    private function getLinePrefix(int $lineNumber, string $htmlTag): string {        
+        return  __("<%1> Line# %2 </%1>", $htmlTag, $lineNumber);         
+        
     }
-
+    
     /**
      * 
-     * @return array
+     * @param int $lineNumber
+     * @param string $lineText
+     * @param string $htmlTag
+     * @param string $lineSeparator
+     * @return string
      */
-    public function getFileContentArray(): array {
-        $resource = $this->file->fileOpen($this->getFilePath(),'r');
-        // Real maximum length of your records
-        $maxLineLength = 1000; 
-        // Moves cursor back from the end of file
-        fseek($resource, -$maxLineLength * $this->getLastLinesQty(), SEEK_END);  
-        $res = [];
-        while (($buffer = fgets($resource, $maxLineLength)) !== false) {
-            $res[] = $buffer;
+    public function getOutputLineText(int $lineNumber, string $lineText, string $htmlTag = '', string $lineSeparator = '<br>'): string {
+        $outputLineText = $lineText;
+        if($this->addLineNumber()){
+            $outputLineFormat = "%s $lineText %s";
+            $outputLineText = sprintf($outputLineFormat, $this->getLinePrefix($lineNumber, $htmlTag), $lineSeparator);
         }
-        $this->file->fileClose($resource);
-        //print_r($res);exit;
-        return array_slice($res, -$this->getLastLinesQty());
-    }
+        return $outputLineText;
+    } 
 
     /**
+     * Defines whether add line number to output depending on a user configuration 
      * 
      * @return bool
      */
     private function addLineNumber(): bool {
-        return (bool) $this->scopeConfig->getValue(Configs::ADD_LINES_NUMBER_CONFIGS_PATH, ScopeInterface::SCOPE_STORE);
+        return (bool) $this->scopeConfig->getValue(
+                        Configs::ADD_LINES_NUMBER_CONFIGS_PATH,
+                        ScopeInterface::SCOPE_STORE);
     }
 
-    /**
-     * 
-     * @return bool
-     */
-    public function isLogFileText(): bool {
-        return $this->isLogFileExists()
-                ? explode("/", mime_content_type($this->getFilePath()))[0] === 'text'
-                : false;
-    }
-
-    /**
+     /**
      * 
      * @return bool
      */
@@ -303,14 +238,21 @@ class LogFile {
         return $this->file->isExists($this->getFilePath());
     }
 
+    
+    /**
+     * 
+     * @return bool
+     */
+    public function isLogFileText(): bool {
+        return $this->isLogFileExists() ? explode("/", mime_content_type($this->getFilePath()))[0] === 'text' : false;
+    }
+   
     /**
      * 
      * @return bool
      */
     public function isLogFileReadable(): bool {
-        return $this->isLogFileExists()
-                ? $this->file->isReadable($this->getFilePath())
-                : false;
+        return $this->isLogFileExists() ? $this->file->isReadable($this->getFilePath()) : false;
     }
 
     /**
@@ -322,5 +264,4 @@ class LogFile {
                 $this->isLogFileReadable() &&
                 $this->isLogFileText();
     }
-
 }

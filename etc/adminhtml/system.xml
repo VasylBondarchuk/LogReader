@@ -21,6 +21,7 @@
                     <label> Add line number to output</label>                    
                     <validate>required-entry</validate>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Adding a line number to each line may have a negative impact on performance</comment>
                 </field>                
 
             </group>
