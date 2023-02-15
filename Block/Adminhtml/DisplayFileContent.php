@@ -32,10 +32,10 @@ class DisplayFileContent extends Template {
     public function displayFileContentHtml(): string {        
 
         $linesToRead = $this->linesToRead();
-        $lineToSartReading = $this->lineToSartReading();
+        $lineToStartReading = $this->lineToStartReading();
         $file = new \LimitIterator(
                     new \SplFileObject($this->logFileModel->getFilePath()),
-                    $lineToSartReading,
+                    $lineToStartReading,
                     $linesToRead
                 );
         
@@ -52,7 +52,7 @@ class DisplayFileContent extends Template {
                 : $this->logFileModel->getFileTotalLinesQty() - 1;
     }
     
-     private function lineToSartReading() : int{
+     private function lineToStartReading() : int{
         return $this->logFileModel->getLastLinesQty() < $this->logFileModel->getFileTotalLinesQty()
                 ? $this->logFileModel->getFileTotalLinesQty()- $this->linesToRead() - 1
                 : 0;
