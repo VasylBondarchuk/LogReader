@@ -8,26 +8,22 @@
         <item name="layout" xsi:type="array">
             <item name="type" xsi:type="string">tabs</item>
         </item>
-        <item name="buttons" xsi:type="array">
-            <item name="back" xsi:type="array">
-                <item name="name" xsi:type="string">back</item>
-                <item name="label" xsi:type="string" translate="true">Back to Grid</item>
-                <item name="class" xsi:type="string">primary</item>
-                <item name="url" xsi:type="string">*/*/</item>
-            </item>
-            
+        
+        <!-- Buttons -->
+        <item name="buttons" xsi:type="array">            
             <item name="save" xsi:type="array">
                 <item name="name" xsi:type="string">save</item>
                 <item name="label" xsi:type="string" translate="true">Display</item>
                 <item name="class" xsi:type="string">primary</item>
                 <item name="url" xsi:type="string">*/*/</item>
-            </item>             
+            </item> 
         </item> 
     </argument>
     
     <settings>
         <buttons>
-            <button name="download" class="Training\LogReader\Block\Adminhtml\Edit\DownloadButton"/>            
+            <button name="download" class="Training\LogReader\Block\Adminhtml\Edit\DownloadButton"/>
+            <button name="back" class="Training\LogReader\Block\Adminhtml\Edit\BackButton"/>            
         </buttons>        
     </settings>
 
@@ -50,7 +46,7 @@
             <label/>
             <dataScope>data</dataScope>
         </settings>
-        
+        <!--File name text field-->
         <field name="file_name" formElement="input" sortOrder="10">
             <settings>
                 <elementTmpl>ui/form/element/text</elementTmpl>
@@ -58,7 +54,7 @@
                 <dataScope>file_name</dataScope>                
             </settings>
         </field>        
-        
+         <!--File size text field-->
         <field name="file_size" formElement="input" sortOrder="20">
             <settings>
                 <elementTmpl>ui/form/element/text</elementTmpl>
@@ -66,7 +62,7 @@
                 <dataScope>file_size</dataScope>                
             </settings>
         </field>
-        
+         <!--File modification time text field-->
         <field name="modified_at" formElement="input" sortOrder="30">
             <settings>
                 <elementTmpl>ui/form/element/text</elementTmpl>
@@ -74,16 +70,15 @@
                 <dataScope>modified_at</dataScope>                
             </settings>
         </field> 
-        
+        <!--File total lines text field-->
         <field name="total_lines_qty" formElement="input" sortOrder="40">
             <settings>
                 <elementTmpl>ui/form/element/text</elementTmpl>
                 <label translate="true">Total lines qty</label>
                 <dataScope>total_lines_qty</dataScope>                
             </settings>
-        </field>
-        
-            
+        </field>        
+        <!--Lines to read input field-->    
         <field name="lines_qty" sortOrder="50" formElement="input">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -102,11 +97,10 @@
                 <visible>true</visible>
             </settings>
         </field>
-        
+        <!--File content lne by line htm content--> 
         <htmlContent name="file_content">       
             <block class="Training\LogReader\Block\Adminhtml\DisplayFileContent" name="view_file_content" template="Training_LogReader::file_viewer.phtml"/>       
         </htmlContent>
           
-    </fieldset>
-    
+    </fieldset>    
 </form>

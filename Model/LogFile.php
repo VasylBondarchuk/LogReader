@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Training\LogReader\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -197,7 +199,7 @@ class LogFile {
      * @param int $lineNumber
      * @return string|null
      */
-    private function getLinePrefix(int $lineNumber, string $htmlTag): string {        
+    private function getLinePrefix(int $lineNumber, string $htmlTag)  {        
         return  __("<%1> Line# %2 </%1>", $htmlTag, $lineNumber);         
         
     }
@@ -211,7 +213,7 @@ class LogFile {
      * @return string
      */
     public function getOutputLineText(int $lineNumber, string $lineText, string $htmlTag = '', string $lineSeparator = '<br>'): string {
-        $outputLineText = $lineText;
+        $outputLineText = $lineText . $lineSeparator;
         if($this->addLineNumber()){
             $outputLineFormat = "%s $lineText %s";
             $outputLineText = sprintf($outputLineFormat, $this->getLinePrefix($lineNumber, $htmlTag), $lineSeparator);
@@ -244,7 +246,9 @@ class LogFile {
      * @return bool
      */
     public function isLogFileText(): bool {
-        return $this->isLogFileExists() ? explode("/", mime_content_type($this->getFilePath()))[0] === 'text' : false;
+        return $this->isLogFileExists()
+                ? explode('/', mime_content_type($this->getFilePath()))[0] === 'text'
+                : false;
     }
    
     /**
@@ -252,7 +256,9 @@ class LogFile {
      * @return bool
      */
     public function isLogFileReadable(): bool {
-        return $this->isLogFileExists() ? $this->file->isReadable($this->getFilePath()) : false;
+        return $this->isLogFileExists()
+                ? $this->file->isReadable($this->getFilePath())
+                : false;
     }
 
     /**

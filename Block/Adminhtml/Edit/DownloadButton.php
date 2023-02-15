@@ -19,12 +19,11 @@ class DownloadButton extends GenericButton implements ButtonProviderInterface {
      * @var UrlInterface
      */
     private UrlInterface $urlInterface;
-
-    /**
-     * @var RequestInterface
-     */
-    private RequestInterface $request;
     
+    /**
+     * 
+     * @var LogFile
+     */
     private LogFile $logFileModel;
 
     public function __construct(
@@ -44,7 +43,7 @@ class DownloadButton extends GenericButton implements ButtonProviderInterface {
         return [
             'label' => __('Download'),
             'on_click' => sprintf("location.href = '%s';", $this->getDownloadUrl()),            
-            'sort_order' => 30
+            'sort_order' => 20
         ];
     }
 
