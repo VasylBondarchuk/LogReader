@@ -93,7 +93,7 @@ class FileStatisticsCollector {
      * @param type $precision
      * @return string
      */
-    public function getFileSize(string $filePath, $precision = 2): string { 
+    public function getFileSize(string $filePath, int $precision = 2): string { 
         $kBSizeInBytes = (float)$this->configs->getFileSizeFormat();        
         $size = $this->file->stat($filePath)['size'];        
         $units = $kBSizeInBytes == 1000

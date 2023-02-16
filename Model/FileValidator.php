@@ -77,8 +77,8 @@ class FileValidator {
      */
     public function isFileValid(): bool {
         return $this->isFileExists() &&
-                $this->isFileReadable() &&
-                $this->isFileText();
+               $this->isFileReadable() &&
+               $this->isFileText();
     }
 
 }

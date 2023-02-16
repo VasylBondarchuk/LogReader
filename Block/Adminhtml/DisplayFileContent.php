@@ -49,11 +49,10 @@ class DisplayFileContent extends Template {
      * @return string
      */
     public function displayFileContentHtml(): string {
-              
+        
         $linesCollection = $this->fileManager->readFile(
-                $this->fileLineFormatter->linesToRead(),
-                $this->fileLineFormatter->lineToStartReading()
-                );
+                $this->fileLineFormatter->lineToStartReading(),
+                $this->fileLineFormatter->linesToRead());
         $outputHtml = ''; 
         foreach ($linesCollection as $lineIndex => $lineText) {
             $outputHtml.= $this->fileLineFormatter->getOutputLineText($lineIndex + 1, $lineText, 'b', '<br>');
