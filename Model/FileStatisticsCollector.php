@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Training\LogReader\Model;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
 use Training\LogReader\Model\Config\Configs;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Filesystem\Driver\File;
@@ -35,23 +33,24 @@ class FileStatisticsCollector {
      * 
      * @var FileFactory
      */
-    private FileFactory $fileFactory;
+    private FileFactory $fileFactory; 
 
     /**
-     * @var ScopeConfigInterface
-     */
-    protected ScopeConfigInterface $scopeConfig;
+    * 
+    * @var Configs
+    */
+    private Configs $configs;
 
     public function __construct(
             RequestInterface $request,
             File $file,
             FileFactory $fileFactory,
-            ScopeConfigInterface $scopeConfig
+            Configs $configs
     ) {
         $this->request = $request;
         $this->file = $file;
         $this->fileFactory = $fileFactory;
-        $this->scopeConfig = $scopeConfig;
+        $this->configs = $configs;
     }
 
     
@@ -137,11 +136,8 @@ class FileStatisticsCollector {
      * @param type $filePath
      * @return string
      */
-    public function getModificationTime($filePath): string {
-        $format = $this->scopeConfig->getValue(
-                        Configs::GET_MODIFICATION_DATE_FORMAT,
-                        ScopeInterface::SCOPE_STORE);
-        return date($format, $this->file->stat($filePath)['mtime']);
+    public function getModificationTime($filePath): string {        
+        return date($this->configs->getTimeFormat(), $this->file->stat($filePath)['mtime']);
     } 
     
 
