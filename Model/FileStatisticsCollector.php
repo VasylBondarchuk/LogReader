@@ -10,7 +10,7 @@ use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\App\Response\Http\FileFactory;
 
 /**
- * Description of File
+ * Collects files statistics
  *
  * @author vasyl
  */
@@ -90,29 +90,19 @@ class FileStatisticsCollector {
     /**
      * 
      * @param string $filePath
+     * @param type $precision
      * @return string
      */
-    public function getFileSize(string $filePath): string {
-        $result = '';
-        $bytes = floatval($this->file->stat($filePath)['size']);
-
-        $arBytes = [
-            ["UNIT" => "TB", "VALUE" => pow(1024, 4)],
-            ["UNIT" => "GB", "VALUE" => pow(1024, 3)],
-            ["UNIT" => "MB", "VALUE" => pow(1024, 2)],
-            ["UNIT" => "KB", "VALUE" => 1024],
-            ["UNIT" => "B", "VALUE" => 1]
-        ];
-
-        foreach ($arBytes as $arItem) {
-            if ($bytes >= $arItem['VALUE']) {
-                $result = $bytes / $arItem['VALUE'];
-                $result = str_replace('.', ',', (string) (round($result, 2))) . ' ' . $arItem['UNIT'];
-                break;
-            }
-        }
-        return $result ? $result : "0 B";
-    }
+    public function getFileSize(string $filePath, $precision = 2): string { 
+        $kBSizeInBytes = (float)$this->configs->getFileSizeFormat();        
+        $size = $this->file->stat($filePath)['size'];        
+        $units = $kBSizeInBytes == 1000
+                ? ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+                : ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+        $power = $size > 0 ? floor(log($size, $kBSizeInBytes)) : 0;
+        return number_format($size / pow($kBSizeInBytes, $power), $precision, '.', ',') . ' ' . $units[$power];
+    }  
+    
 
     /**
      * 
@@ -120,7 +110,7 @@ class FileStatisticsCollector {
      * @return string
      */
     public function getModificationTime(string $filePath): string {        
-        return date($this->configs->getTimeFormat(), $this->file->stat($filePath)['mtime']);
+        return \date($this->configs->getTimeFormat(), $this->file->stat($filePath)['mtime']);
     }
 
     /**

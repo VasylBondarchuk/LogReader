@@ -14,7 +14,8 @@ class Configs {
     // Deafault customizable configs values
     const DEFAULT_LINES_QTY = 10;
     const DEFAULT_ADD_LINE_NUMBER = false;
-    const DEFAULT_TIME_FORMAT = 'F j, Y, g:i a';    
+    const DEFAULT_TIME_FORMAT = 'F j, Y, g:i a';
+    const DEFAULT_FILE_SIZE_FORMAT = 1000;    
     // Request fields names
     const FILE_NAME_REQUEST_FIELD = 'file_name';
     const LINES_QTY_REQUEST_FIELD = 'lines_qty';
@@ -22,6 +23,7 @@ class Configs {
     const DEFAULT_LINES_QTY_CONFIGS_PATH = 'logreader_configuration/logreader_configuration_general/default_last_lines_qty';
     const ADD_LINES_NUMBER_CONFIGS_PATH = 'logreader_configuration/logreader_configuration_general/add_lines_numbers_to_output';
     const GET_MODIFICATION_DATE_FORMAT = 'logreader_configuration/logreader_configuration_general/modification_date_format';
+    const FILE_SIZE_FORMAT = 'logreader_configuration/logreader_configuration_general/file_size_format';
 
     /**
      * @var ScopeConfigInterface
@@ -68,6 +70,16 @@ class Configs {
                 )
                 ? (string) $this->scopeConfig->getValue(self::GET_MODIFICATION_DATE_FORMAT, ScopeInterface::SCOPE_STORE)
                 : self::DEFAULT_TIME_FORMAT;
+    }
+    
+        /**
+     * 
+     * @return int
+     */
+    public function getFileSizeFormat(): string {
+        return  $this->scopeConfig->getValue(self::FILE_SIZE_FORMAT, ScopeInterface::SCOPE_STORE)
+                ? $this->scopeConfig->getValue(self::FILE_SIZE_FORMAT, ScopeInterface::SCOPE_STORE)
+                : self::DEFAULT_FILE_SIZE;
     }
 
     /**
