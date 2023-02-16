@@ -6,31 +6,31 @@ namespace Training\LogReader\Block\Adminhtml;
 
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Training\LogReader\Model\LogFile;
-use Training\LogReader\Model\Lines;
+use Training\LogReader\Model\FileStatisticsCollector;
+use Training\LogReader\Model\FileLineFormatter;
 
 class DisplayFileContent extends Template {
 
     /**
      * 
-     * @var LogFile
+     * @var FileStatisticsCollector
      */
-    private LogFile $logFileModel;
+    private FileStatisticsCollector $fileStatCollector;
     
-    /**
-     * 
-     * @var LogFile
-     */
-    private Lines $lines;    
+   /**
+    * 
+    * @var FileLineFormatter
+    */
+    private FileLineFormatter $fileLineFormatter;    
     
 
     public function __construct(
             Context $context,
-            LogFile $logFileModel,
-            Lines $lines            
+            FileStatisticsCollector $fileStatCollector,
+            FileLineFormatter $fileLineFormatter           
     ) {
-        $this->logFileModel = $logFileModel;
-        $this->lines = $lines;        
+        $this->fileStatCollector = $fileStatCollector;
+        $this->fileLineFormatter = $fileLineFormatter;        
         parent::__construct($context);
     }
 
@@ -41,14 +41,13 @@ class DisplayFileContent extends Template {
      */
     public function displayFileContentHtml(): string {        
 
-        $linesToRead = $this->lines->linesToRead();
-        $lineToStartReading = $this->lines->lineToStartReading();        
-        $linesCollection = $this->logFileModel->readFileToCollection($lineToStartReading,$linesToRead);
+        $linesToRead = $this->fileLineFormatter->linesToRead();
+        $lineToStartReading = $this->fileLineFormatter->lineToStartReading();        
+        $linesCollection = $this->fileStatCollector->readFileToCollection($lineToStartReading,$linesToRead);
         $outputHtml = ''; 
         foreach ($linesCollection as $lineIndex => $lineText) {
-            $outputHtml.= $this->lines->getOutputLineText($lineIndex + 1, $lineText, 'b', '<br>');
+            $outputHtml.= $this->fileLineFormatter->getOutputLineText($lineIndex + 1, $lineText, 'b', '<br>');
         }    
         return $outputHtml;
-    } 
-    
+    }
 }

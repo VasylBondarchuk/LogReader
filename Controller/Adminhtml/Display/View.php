@@ -10,8 +10,9 @@ use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Message\ManagerInterface;
-use Training\LogReader\Model\LogFile;
-use Training\LogReader\Model\Lines;
+use Training\LogReader\Model\FileStatisticsCollector;
+use Training\LogReader\Model\FileValidator;
+use Training\LogReader\Model\FileLineFormatter;
 use Training\LogReader\Model\Config\Configs;
 
 class View implements HttpPostActionInterface, HttpGetActionInterface {
@@ -42,61 +43,70 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
      */
     private ManagerInterface $messageManager;
 
-   /**
+    /**
      * 
-     * @var LogFile
+     * @var File
      */
-    private LogFile $logFileModel;
+    private FileStatisticsCollector $fileStatCollector;
     
     /**
      * 
-     * @var LogFile
+     * @var File
      */
-    private Lines $lines;
+    private FileValidator $fileValidator;
+    
+    
+    /**
+     * 
+     * @var File
+     */
+    private FileLineFormatter $fileLineFormatter;
 
     public function __construct(
             PageFactory $pageFactory,
             ResultFactory $resultFactory,
             RequestInterface $request,
             ManagerInterface $messageManager,
-            LogFile $logFileModel,
-            Lines $lines 
+            FileStatisticsCollector $fileStatCollector,
+            FileValidator $fileValidator,
+            FileLineFormatter $fileLineFormatter 
     ) {
         $this->pageFactory = $pageFactory;
         $this->resultFactory = $resultFactory;
         $this->request = $request;
         $this->messageManager = $messageManager;
-        $this->logFileModel = $logFileModel;
-        $this->lines = $lines;   
+        $this->fileStatCollector = $fileStatCollector;
+        $this->fileValidator = $fileValidator;
+        $this->fileLineFormatter= $fileLineFormatter;   
     }
 
     public function execute() {
         
-        if (!$this->logFileModel->isLogFileValid()) {            
-            $this->validateLogFile();
+        if (!$this->fileValidator->isFileValid()) {            
+            $this->validateFile();
             $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
             $resultRedirect->setPath('*/*/');
             return $resultRedirect;
         } 
         
-        $this->validatelinesQtyInput();
+        $this->validatefileLineFormatterQtyInput();
         $page = $this->pageFactory->create();
-        $page->getConfig()->getTitle()->prepend(__($this->logFileModel->getFileNameFromUrl()));
+        $page->getConfig()->getTitle()->prepend(__($this->fileStatCollector->getFileNameFromUrl()));
         return $page;
     }
 
     /**
-     * Validates user input of lines to read number
+     * Validates user input of fileLineFormatter to read number
      *  
      */    
-    private function validatelinesQtyInput() {       
+    private function validatefileLineFormatterQtyInput() {       
         $lastLinesQtyFromUrl = (int)$this->request->getParam(Configs::LINES_QTY_REQUEST_FIELD);
         if ($this->request->getPostValue()) {
-            if ($lastLinesQtyFromUrl > $this->lines->getFileTotalLinesQty()) {
-                $this->messageManager->addErrorMessage(__('Entered qty exceeds the total lines number of the file'));
+            if ($lastLinesQtyFromUrl > $this->fileLineFormatter->getFileTotalLinesQty()) {
+                $this->messageManager->addErrorMessage(__('Entered qty exceeds the total fileLineFormatter number of the file'));
             }
             if ($lastLinesQtyFromUrl <= 0) {
-                $this->messageManager->addErrorMessage(__('Entered lines qty should a be positive integer number'));
+                $this->messageManager->addErrorMessage(__('Entered fileLineFormatter qty should a be positive integer number'));
             }
         }
     }
@@ -105,23 +115,23 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
      * 
      * Validates log file before show its content 
      */
-    private function validateLogFile() {
-        if (!$this->logFileModel->isLogFileExists()) {
+    private function validateFile() {
+        if (!$this->fileValidator->isFileExists()) {
             $this->messageManager->addErrorMessage(__('File %1 can not be found in %2 ',
-                            $this->logFileModel->getFileNameFromUrl(),
+                            $this->fileStatCollector->getFileNameFromUrl(),
                             Configs::LOG_DIR_PATH)
             );            
         }
 
-        elseif (!$this->logFileModel->isLogFileReadable()) {
+        elseif (!$this->fileValidator->isFileReadable()) {
             $this->messageManager->addErrorMessage(__('File %1 is not a redable ',
-                            $this->logFileModel->getFileNameFromUrl())
+                            $this->fileStatCollector->getFileNameFromUrl())
             );            
         }   
         
-        elseif (!$this->logFileModel->isLogFileText()) {
+        elseif (!$this->fileValidator->isFileText()) {
             $this->messageManager->addErrorMessage(__('File %1 is not a text file ',
-                            $this->logFileModel->getFileNameFromUrl())
+                            $this->fileStatCollector->getFileNameFromUrl())
             );           
         } 
         

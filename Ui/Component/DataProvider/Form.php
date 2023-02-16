@@ -5,49 +5,46 @@ declare(strict_types=1);
 namespace Training\LogReader\Ui\Component\DataProvider;
 
 use Magento\Ui\DataProvider\AbstractDataProvider;
-use Training\LogReader\Model\LogFile;
-use Training\LogReader\Model\Lines;
+use Training\LogReader\Model\FileStatisticsCollector;
+use Training\LogReader\Model\FileLineFormatter;
 
 /**
  * Class DataProvider
  */
 class Form extends AbstractDataProvider {
 
-    /**
-     * 
-     * @var LogFile
-     */
-    private LogFile $logFileModel;
+
+    private FileStatisticsCollector $fileStatCollector;
     
     /**
      * 
-     * @var LogFile
+     * @var File
      */
-    private Lines $lines;
+    private FileLineFormatter $fileLineFormatter;
     
     public function __construct(
             $name,
             $primaryFieldName,
             $requestFieldName,
-            LogFile $logFileModel,
-            Lines $lines,    
+            FileStatisticsCollector $fileStatCollector,
+            FileLineFormatter $fileLineFormatter,    
             array $meta = [],
             array $data = []
     ) {
-        $this->logFileModel = $logFileModel;
-        $this->lines = $lines;     
+        $this->fileStatCollector = $fileStatCollector;
+        $this->fileLineFormatter = $fileLineFormatter;     
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
     }
 
     public function getData(): array {
         $result = [
-            $this->logFileModel->getFileNameFromUrl() =>
+            $this->fileStatCollector->getFileNameFromUrl() =>
             [
-                'file_name' => $this->logFileModel->getFileNameFromUrl(),
-                'file_size' => $this->logFileModel->getFileSize($this->logFileModel->getFilePath()),
-                'modified_at' => $this->logFileModel->getModificationTime($this->logFileModel->getFilePath()),
-                'total_lines_qty' => $this->lines->getFileTotalLinesQty(),
-                'lines_qty' => $this->lines->getLastLinesQty()                
+                'file_name' => $this->fileStatCollector->getFileNameFromUrl(),
+                'file_size' => $this->fileStatCollector->getFileSize($this->fileStatCollector->getFilePath()),
+                'modified_at' => $this->fileStatCollector->getModificationTime($this->fileStatCollector->getFilePath()),
+                'total_lines_qty' => $this->fileLineFormatter->getFileTotalLinesQty(),
+                'lines_qty' => $this->fileLineFormatter->getLastLinesQty()                
             ]
         ];
         return $result;

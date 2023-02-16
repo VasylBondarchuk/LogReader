@@ -7,7 +7,7 @@ namespace Training\LogReader\Controller\Adminhtml\Display;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Controller\ResultFactory;
-use Training\LogReader\Model\LogFile;
+use Training\LogReader\Model\FileStatisticsCollector;
 
 class Download implements HttpGetActionInterface {
 
@@ -19,11 +19,8 @@ class Download implements HttpGetActionInterface {
      * @var ResultFactory
      */       
     private ResultFactory $resultFactory;
-    /**
-     * 
-     * @var LogFile
-     */
-    private LogFile $logFileModel;
+    
+    private FileStatisticsCollector $fileStatCollector;
 
     /**
      * 
@@ -34,20 +31,20 @@ class Download implements HttpGetActionInterface {
     public function __construct(            
             ResultFactory $resultFactory,
             ManagerInterface $messageManager,            
-            LogFile $logFileModel          
+            FileStatisticsCollector $fileStatCollector          
             
     ) {        
         $this->resultFactory = $resultFactory; 
         $this->messageManager = $messageManager;      
-        $this->logFileModel = $logFileModel;
+        $this->fileStatCollector = $fileStatCollector;
     }
 
     public function execute() {
         try {
-            $this->logFileModel->downloadFile();
+            $this->fileStatCollector->downloadFile();
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage(
-                    __('An error %1 occurred while downloading the file %2.', '"' . $e->getMessage() . '"', $this->logFileModel->getFilePath())
+                    __('An error %1 occurred while downloading the file %2.', '"' . $e->getMessage() . '"', $this->fileStatCollector->getFilePath())
             );
             $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
             $resultRedirect->setPath('*/*/');

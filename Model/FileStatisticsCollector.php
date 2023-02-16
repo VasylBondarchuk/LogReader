@@ -13,11 +13,11 @@ use Magento\Framework\App\Response\Http\FileFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
- * Description of LogFile
+ * Description of File
  *
  * @author vasyl
  */
-class LogFile {
+class FileStatisticsCollector {
 
     /**
      * 
@@ -152,45 +152,6 @@ class LogFile {
      */
     public function getFilesNumber(string $directoryPath): int {
         return \count($this->getFilesNamesInDirectory($directoryPath));
-    }    
-    
-     /**
-     * 
-     * @return bool
-     */
-    public function isLogFileExists(): bool {
-        return $this->file->isExists($this->getFilePath());
-    }
-
-    
-    /**
-     * 
-     * @return bool
-     */
-    public function isLogFileText(): bool {
-        return $this->isLogFileExists()
-                ? explode('/', mime_content_type($this->getFilePath()))[0] === 'text'
-                : false;
-    }
-   
-    /**
-     * 
-     * @return bool
-     */
-    public function isLogFileReadable(): bool {
-        return $this->isLogFileExists()
-                ? $this->file->isReadable($this->getFilePath())
-                : false;
-    }
-
-    /**
-     * 
-     * @return bool
-     */
-    public function isLogFileValid(): bool {
-        return $this->isLogFileExists() &&
-                $this->isLogFileReadable() &&
-                $this->isLogFileText();
-    }
+    } 
     
 }

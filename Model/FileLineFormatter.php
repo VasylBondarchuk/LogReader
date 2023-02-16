@@ -4,43 +4,41 @@ declare(strict_types=1);
 
 namespace Training\LogReader\Model;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
 use Training\LogReader\Model\Config\Configs;
 use Magento\Framework\App\RequestInterface;
-use Training\LogReader\Model\LogFile;
+use Training\LogReader\Model\FileStatisticsCollector;
 
 /**
- * Description of LogFile
- *
- * @author vasyl
+ * Formats lines of the file to display
+ * 
  */
-class Lines {
+class FileLineFormatter {
 
     /**
      * 
-     * @var LogFile
+     * @var File
      */
-    private LogFile $logFileModel;
+    private FileStatisticsCollector $fileStatCollector;
     /**
      * 
      * @var RequestInterface
      */
-    private RequestInterface $request;    
-
+    private RequestInterface $request;
+    
     /**
-     * @var ScopeConfigInterface
+     * 
+     * @var Configs
      */
-    private ScopeConfigInterface $scopeConfig;
+    private Configs $configs;
 
     public function __construct(
-            LogFile $logFileModel,
-            RequestInterface $request,            
-            ScopeConfigInterface $scopeConfig
+            FileStatisticsCollector $fileStatCollector,
+            RequestInterface $request,
+            Configs $configs
     ) {
-        $this->logFileModel = $logFileModel;
-        $this->request = $request;        
-        $this->scopeConfig = $scopeConfig;
+        $this->fileStatCollector = $fileStatCollector;
+        $this->request = $request;
+        $this->configs = $configs;
     }
     
     /**
@@ -48,7 +46,7 @@ class Lines {
      * @return int
      */
     public function getFileTotalLinesQty(): int {
-        $file = new \SplFileObject($this->logFileModel->getFilePath());
+        $file = new \SplFileObject($this->fileStatCollector->getFilePath());
         $file->seek($file->getSize());
         $totalLines = $file->key() + 1;
         return $totalLines;
@@ -86,56 +84,29 @@ class Lines {
      * @return string
      */
     public function getOutputLineText(int $lineNumber, string $lineText, string $htmlTag = '', string $lineSeparator = '<br>'): string {
-        $outputLineText = $lineText . $lineSeparator;
-        if($this->addLineNumber()){
+        $outputLineText = $lineText . $lineSeparator;        
+        if($this->configs->getAddLineNumber()){
             $outputLineFormat = "%s $lineText %s";
-            $outputLineText = sprintf($outputLineFormat, $this->getLinePrefix($lineNumber, $htmlTag), $lineSeparator);
+            $outputLineText = sprintf(
+                    $outputLineFormat,
+                    $this->getLinePrefix($lineNumber, $htmlTag),
+                    $lineSeparator);
         }
         return $outputLineText;
-    } 
-
-    /**
-     * Defines whether add line number to output depending on a user configuration 
-     * 
-     * @return bool
-     */
-    private function addLineNumber(): bool {
-        return (bool) $this->scopeConfig->getValue(
-                        Configs::ADD_LINES_NUMBER_CONFIGS_PATH,
-                        ScopeInterface::SCOPE_STORE);
-    }   
-    
+    }
 
     /**
      * 
      * @return int
      */
     public function getLastLinesQty(): int {
-        $lastLinesQty = $this->getValidDefaultLastLinesQty();
+        $lastLinesQty = $this->configs->getDefaultLinesToRead();
         $lastLinesQtyFromUrl = (int) $this->request->getParam(Configs::LINES_QTY_REQUEST_FIELD);
         $correctQty = ($lastLinesQtyFromUrl < $this->getFileTotalLinesQty()) && $lastLinesQtyFromUrl > 0;
         if ($correctQty) {
             $lastLinesQty = $lastLinesQtyFromUrl;
         }
         return $lastLinesQty;
-    }
-
-    /**
-     * 
-     * @return int
-     */
-    public function getValidDefaultLastLinesQty(): int {
-        return $this->isLastLinesQtyValid($this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE))
-                ? (int) $this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE)
-                : Configs::DEFAULT_LINES_QTY;
-    }
-
-    /**
-     * 
-     * @return int
-     */
-    public function isLastLinesQtyValid(string $linesQty): bool {
-        return !empty($linesQty) && (int) $linesQty > 0;
     }
     
 }
