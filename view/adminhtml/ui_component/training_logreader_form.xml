@@ -97,7 +97,7 @@
                 <visible>true</visible>
             </settings>
         </field>
-        <!--File content lne by line htm content--> 
+        <!--File content line by line html content--> 
         <htmlContent name="file_content">       
             <block class="Training\LogReader\Block\Adminhtml\DisplayFileContent" name="view_file_content" template="Training_LogReader::file_viewer.phtml"/>       
         </htmlContent>

@@ -6,7 +6,7 @@ namespace Training\LogReader\Ui\Component\DataProvider;
 
 use Magento\Ui\DataProvider\AbstractDataProvider;
 use Training\LogReader\Model\LogFile;
-use Training\LogReader\Configs;
+use Training\LogReader\Model\Config\Configs;
 
 class Grid extends AbstractDataProvider {
 

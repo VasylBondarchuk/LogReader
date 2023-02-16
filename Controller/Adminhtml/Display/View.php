@@ -12,7 +12,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Message\ManagerInterface;
 use Training\LogReader\Model\LogFile;
 use Training\LogReader\Model\Lines;
-use Training\LogReader\Configs;
+use Training\LogReader\Model\Config\Configs;
 
 class View implements HttpPostActionInterface, HttpGetActionInterface {
 

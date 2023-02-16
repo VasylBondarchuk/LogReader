@@ -11,18 +11,25 @@
             <resource>Training_LogReader::menu</resource>
             <group id="logreader_configuration_general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>LogReader General Configuration</label>
-
+                
+                <!--Set default lines to be read -->        
                 <field id="default_last_lines_qty" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Default last lines qty </label>
                     <validate>required-entry validate-zero-or-greater</validate>
                 </field>                
-
+                <!--Set whether to add line number to output --> 
                 <field id="add_lines_numbers_to_output" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Add line number to output</label>                    
                     <validate>required-entry</validate>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Adding a line number to each line may have a negative impact on performance</comment>
-                </field>                
+                </field>
+                <!--Set file modification time format -->
+                <field id="modification_date_format" translate="label" type="select"
+                                   sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Modification time format</label>
+                    <source_model>Training\LogReader\Model\Config\Source\DateFormat</source_model>
+                </field>                                
 
             </group>
         </section>

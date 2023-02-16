@@ -8,7 +8,7 @@ use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Backend\Block\Widget\Context;
 use Training\LogReader\Model\LogFile;
-use Training\LogReader\Configs;
+use Training\LogReader\Model\Config\Configs;
 
 /**
  * Provides data for 'Back' button

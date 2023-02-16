@@ -6,7 +6,7 @@ namespace Training\LogReader\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
-use Training\LogReader\Configs;
+use Training\LogReader\Model\Config\Configs;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\App\Response\Http\FileFactory;
@@ -138,8 +138,12 @@ class LogFile {
      * @return string
      */
     public function getModificationTime($filePath): string {
-        return date("l, dS F, Y, h:ia", $this->file->stat($filePath)['mtime']);
-    }
+        $format = $this->scopeConfig->getValue(
+                        Configs::GET_MODIFICATION_DATE_FORMAT,
+                        ScopeInterface::SCOPE_STORE);
+        return date($format, $this->file->stat($filePath)['mtime']);
+    } 
+    
 
     /**
      * 

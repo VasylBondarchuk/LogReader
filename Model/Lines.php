@@ -6,7 +6,7 @@ namespace Training\LogReader\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
-use Training\LogReader\Configs;
+use Training\LogReader\Model\Config\Configs;
 use Magento\Framework\App\RequestInterface;
 use Training\LogReader\Model\LogFile;
 
