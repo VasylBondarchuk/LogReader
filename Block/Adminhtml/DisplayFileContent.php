@@ -7,6 +7,7 @@ namespace Training\LogReader\Block\Adminhtml;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Training\LogReader\Model\LogFile;
+use Training\LogReader\Model\Lines;
 
 class DisplayFileContent extends Template {
 
@@ -15,12 +16,21 @@ class DisplayFileContent extends Template {
      * @var LogFile
      */
     private LogFile $logFileModel;
+    
+    /**
+     * 
+     * @var LogFile
+     */
+    private Lines $lines;    
+    
 
     public function __construct(
             Context $context,
-            LogFile $logFileModel
+            LogFile $logFileModel,
+            Lines $lines            
     ) {
         $this->logFileModel = $logFileModel;
+        $this->lines = $lines;        
         parent::__construct($context);
     }
 
@@ -31,31 +41,14 @@ class DisplayFileContent extends Template {
      */
     public function displayFileContentHtml(): string {        
 
-        $linesToRead = $this->linesToRead();
-        $lineToStartReading = $this->lineToStartReading();
-        $file = new \LimitIterator(
-                    new \SplFileObject($this->logFileModel->getFilePath()),
-                    $lineToStartReading,
-                    $linesToRead
-                );
-        
+        $linesToRead = $this->lines->linesToRead();
+        $lineToStartReading = $this->lines->lineToStartReading();        
+        $linesCollection = $this->logFileModel->readFileToCollection($lineToStartReading,$linesToRead);
         $outputHtml = ''; 
-        foreach ($file as $lineIndex => $lineText) {
-            $outputHtml.= $this->logFileModel->getOutputLineText($lineIndex + 1, $lineText, 'b', '<br>');
+        foreach ($linesCollection as $lineIndex => $lineText) {
+            $outputHtml.= $this->lines->getOutputLineText($lineIndex + 1, $lineText, 'b', '<br>');
         }    
         return $outputHtml;
-    }    
+    } 
     
-    private function linesToRead() : int {
-        return $this->logFileModel->getLastLinesQty() < $this->logFileModel->getFileTotalLinesQty()
-                ? $this->logFileModel->getLastLinesQty() - 1
-                : $this->logFileModel->getFileTotalLinesQty() - 1;
-    }
-    
-     private function lineToStartReading() : int{
-        return $this->logFileModel->getLastLinesQty() < $this->logFileModel->getFileTotalLinesQty()
-                ? $this->logFileModel->getFileTotalLinesQty()- $this->linesToRead() - 1
-                : 0;
-            
-    }
 }

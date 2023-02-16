@@ -54,54 +54,22 @@ class LogFile {
         $this->scopeConfig = $scopeConfig;
     }
 
+    
+    public function readFileToCollection(int $lineToStartReading, int $linesToRead){
+        return new \LimitIterator(
+                    new \SplFileObject($this->getFilePath()),
+                    $lineToStartReading,
+                    $linesToRead
+                );       
+    }
+    
     /**
      * 
      * @return string
      */
     public function getFileNameFromUrl(): string {
         return $this->request->getParam(Configs::FILE_NAME_REQUEST_FIELD);
-    }
-
-    /**
-     * 
-     * @return int
-     */
-    public function getLastLinesQtyFromUrl(): int {
-        return (int) $this->request->getParam(Configs::LINES_QTY_REQUEST_FIELD);
-    }
-
-    /**
-     * 
-     * @return int
-     */
-    public function getLastLinesQty(): int {
-        $lastLinesQty = $this->getValidDefaultLastLinesQty();
-        $lastLinesQtyFromUrl = $this->getLastLinesQtyFromUrl();
-        $correctQty = ($lastLinesQtyFromUrl < $this->getFileTotalLinesQty()) && $lastLinesQtyFromUrl > 0;
-        if ($correctQty) {
-            $lastLinesQty = $lastLinesQtyFromUrl;
-        }
-        return $lastLinesQty;
-    }
-
-    /**
-     * 
-     * @return int
-     */
-    public function getValidDefaultLastLinesQty(): int {
-        return $this->isLastLinesQtyValid(
-                        $this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE))
-                ? (int) $this->scopeConfig->getValue(Configs::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE)
-                : Configs::DEFAULT_LINES_QTY;
-    }
-
-    /**
-     * 
-     * @return int
-     */
-    public function isLastLinesQtyValid(string $linesQty): bool {
-        return !empty($linesQty) && (int) $linesQty > 0;
-    }
+    }    
 
     /**
      * 
@@ -109,18 +77,7 @@ class LogFile {
      */
     public function getFilePath(): string {
         return Configs::LOG_DIR_PATH . DIRECTORY_SEPARATOR . $this->getFileNameFromUrl();
-    }
-
-    /**
-     * 
-     * @return int
-     */
-    public function getFileTotalLinesQty(): int {
-        $file = new \SplFileObject($this->getFilePath());
-        $file->seek($file->getSize());
-        $totalLines = $file->key() + 1;
-        return $totalLines;
-    }
+    }    
 
     /**
      * 
@@ -136,7 +93,7 @@ class LogFile {
      * @param string $directoryPath
      * @return array
      */
-    public function getFilesInDirectory(string $directoryPath): array {
+    public function getFilesNamesInDirectory(string $directoryPath): array {
         $fileNames = [];
         $content = $this->file->readDirectory($directoryPath);
 
@@ -190,48 +147,9 @@ class LogFile {
      * @return int
      */
     public function getFilesNumber(string $directoryPath): int {
-        return \count($this->getFilesInDirectory($directoryPath));
-    } 
+        return \count($this->getFilesNamesInDirectory($directoryPath));
+    }    
     
-    /**
-     * Adds a prefix to the line showing the line number depending on a user configuration
-     * 
-     * @param int $lineNumber
-     * @return string|null
-     */
-    private function getLinePrefix(int $lineNumber, string $htmlTag)  {        
-        return  __("<%1> Line# %2 </%1>", $htmlTag, $lineNumber);         
-        
-    }
-    
-    /**
-     * 
-     * @param int $lineNumber
-     * @param string $lineText
-     * @param string $htmlTag
-     * @param string $lineSeparator
-     * @return string
-     */
-    public function getOutputLineText(int $lineNumber, string $lineText, string $htmlTag = '', string $lineSeparator = '<br>'): string {
-        $outputLineText = $lineText . $lineSeparator;
-        if($this->addLineNumber()){
-            $outputLineFormat = "%s $lineText %s";
-            $outputLineText = sprintf($outputLineFormat, $this->getLinePrefix($lineNumber, $htmlTag), $lineSeparator);
-        }
-        return $outputLineText;
-    } 
-
-    /**
-     * Defines whether add line number to output depending on a user configuration 
-     * 
-     * @return bool
-     */
-    private function addLineNumber(): bool {
-        return (bool) $this->scopeConfig->getValue(
-                        Configs::ADD_LINES_NUMBER_CONFIGS_PATH,
-                        ScopeInterface::SCOPE_STORE);
-    }
-
      /**
      * 
      * @return bool
@@ -270,4 +188,5 @@ class LogFile {
                 $this->isLogFileReadable() &&
                 $this->isLogFileText();
     }
+    
 }

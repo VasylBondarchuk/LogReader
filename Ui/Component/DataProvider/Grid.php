@@ -39,7 +39,7 @@ class Grid extends AbstractDataProvider {
     public function getFilesDetailsArray(string $directoryPath): array {
         $filesDetailsArray = [];
 
-        foreach ($this->logFileModel->getFilesInDirectory($directoryPath) as $fileName) {
+        foreach ($this->logFileModel->getFilesNamesInDirectory($directoryPath) as $fileName) {
             $filesDetailsArray[] = [
                 'file_name' => $fileName,
                 'file_size' => $this->logFileModel->getFileSize($directoryPath . DIRECTORY_SEPARATOR . $fileName),

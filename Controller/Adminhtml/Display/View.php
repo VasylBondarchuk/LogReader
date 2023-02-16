@@ -11,6 +11,7 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Message\ManagerInterface;
 use Training\LogReader\Model\LogFile;
+use Training\LogReader\Model\Lines;
 use Training\LogReader\Configs;
 
 class View implements HttpPostActionInterface, HttpGetActionInterface {
@@ -41,24 +42,32 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
      */
     private ManagerInterface $messageManager;
 
-    /**
+   /**
      * 
      * @var LogFile
      */
     private LogFile $logFileModel;
+    
+    /**
+     * 
+     * @var LogFile
+     */
+    private Lines $lines;
 
     public function __construct(
             PageFactory $pageFactory,
             ResultFactory $resultFactory,
             RequestInterface $request,
             ManagerInterface $messageManager,
-            LogFile $logFileModel
+            LogFile $logFileModel,
+            Lines $lines 
     ) {
         $this->pageFactory = $pageFactory;
         $this->resultFactory = $resultFactory;
         $this->request = $request;
         $this->messageManager = $messageManager;
         $this->logFileModel = $logFileModel;
+        $this->lines = $lines;   
     }
 
     public function execute() {
@@ -80,12 +89,13 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
      * Validates user input of lines to read number
      *  
      */    
-    private function validatelinesQtyInput() {
+    private function validatelinesQtyInput() {       
+        $lastLinesQtyFromUrl = (int)$this->request->getParam(Configs::LINES_QTY_REQUEST_FIELD);
         if ($this->request->getPostValue()) {
-            if ($this->logFileModel->getLastLinesQtyFromUrl() > $this->logFileModel->getFileTotalLinesQty()) {
+            if ($lastLinesQtyFromUrl > $this->lines->getFileTotalLinesQty()) {
                 $this->messageManager->addErrorMessage(__('Entered qty exceeds the total lines number of the file'));
             }
-            if ((int) $this->logFileModel->getLastLinesQtyFromUrl() <= 0) {
+            if ($lastLinesQtyFromUrl <= 0) {
                 $this->messageManager->addErrorMessage(__('Entered lines qty should a be positive integer number'));
             }
         }
