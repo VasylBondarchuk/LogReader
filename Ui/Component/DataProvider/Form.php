@@ -13,7 +13,10 @@ use Training\LogReader\Model\FileLineFormatter;
  */
 class Form extends AbstractDataProvider {
 
-
+    /**
+     * 
+     * @var FileStatisticsCollector
+     */
     private FileStatisticsCollector $fileStatCollector;
     
     /**
@@ -36,6 +39,10 @@ class Form extends AbstractDataProvider {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
     }
 
+    /**
+     * 
+     * @return array
+     */
     public function getData(): array {
         $result = [
             $this->fileStatCollector->getFileNameFromUrl() =>
@@ -50,6 +57,11 @@ class Form extends AbstractDataProvider {
         return $result;
     }
 
+    /**
+     * 
+     * @param \Magento\Framework\Api\Filter $filter
+     * @return type
+     */
     public function addFilter(\Magento\Framework\Api\Filter $filter) {
         return;
     }

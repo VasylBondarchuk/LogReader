@@ -9,6 +9,7 @@ use Magento\Store\Model\ScopeInterface;
 
 class Configs {
 
+    // Path to directory containing log files
     const LOG_DIR_PATH = BP . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log';
     // Deafault customizable configs values
     const DEFAULT_LINES_QTY = 10;

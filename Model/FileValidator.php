@@ -9,7 +9,7 @@ use Magento\Framework\App\Response\Http\FileFactory;
 use Training\LogReader\Model\FileStatisticsCollector;
 
 /**
- * Description of File
+ * Collects file statistics
  *
  * @author vasyl
  */

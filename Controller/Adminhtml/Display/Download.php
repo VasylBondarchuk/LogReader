@@ -8,6 +8,7 @@ use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Training\LogReader\Model\FileStatisticsCollector;
+use Training\LogReader\Model\FileManager;
 
 class Download implements HttpGetActionInterface {
 
@@ -20,7 +21,17 @@ class Download implements HttpGetActionInterface {
      */       
     private ResultFactory $resultFactory;
     
+    /**
+     * 
+     * @var FileStatisticsCollector
+     */
     private FileStatisticsCollector $fileStatCollector;
+    
+    /**
+     * 
+     * @var FileManager
+     */
+    private FileManager $fileManager; 
 
     /**
      * 
@@ -31,17 +42,19 @@ class Download implements HttpGetActionInterface {
     public function __construct(            
             ResultFactory $resultFactory,
             ManagerInterface $messageManager,            
-            FileStatisticsCollector $fileStatCollector          
+            FileStatisticsCollector $fileStatCollector,
+            FileManager $fileManager
             
     ) {        
         $this->resultFactory = $resultFactory; 
         $this->messageManager = $messageManager;      
         $this->fileStatCollector = $fileStatCollector;
+        $this->fileManager = $fileManager;
     }
 
     public function execute() {
         try {
-            $this->fileStatCollector->downloadFile();
+            $this->fileManager->downloadFile();
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage(
                     __('An error %1 occurred while downloading the file %2.', '"' . $e->getMessage() . '"', $this->fileStatCollector->getFilePath())

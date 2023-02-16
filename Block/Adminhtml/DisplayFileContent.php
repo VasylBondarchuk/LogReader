@@ -8,6 +8,7 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Training\LogReader\Model\FileStatisticsCollector;
 use Training\LogReader\Model\FileLineFormatter;
+use Training\LogReader\Model\FileManager;
 
 class DisplayFileContent extends Template {
 
@@ -21,16 +22,24 @@ class DisplayFileContent extends Template {
     * 
     * @var FileLineFormatter
     */
-    private FileLineFormatter $fileLineFormatter;    
+    private FileLineFormatter $fileLineFormatter;
+
+    /**
+     * 
+     * @var FileManager
+     */
+    private FileManager $fileManager;     
     
 
     public function __construct(
             Context $context,
             FileStatisticsCollector $fileStatCollector,
-            FileLineFormatter $fileLineFormatter           
+            FileLineFormatter $fileLineFormatter,
+            FileManager $fileManager 
     ) {
         $this->fileStatCollector = $fileStatCollector;
-        $this->fileLineFormatter = $fileLineFormatter;        
+        $this->fileLineFormatter = $fileLineFormatter;
+        $this->fileManager = $fileManager;        
         parent::__construct($context);
     }
 
@@ -39,11 +48,12 @@ class DisplayFileContent extends Template {
      * 
      * @return string
      */
-    public function displayFileContentHtml(): string {        
-
-        $linesToRead = $this->fileLineFormatter->linesToRead();
-        $lineToStartReading = $this->fileLineFormatter->lineToStartReading();        
-        $linesCollection = $this->fileStatCollector->readFileToCollection($lineToStartReading,$linesToRead);
+    public function displayFileContentHtml(): string {
+              
+        $linesCollection = $this->fileManager->readFile(
+                $this->fileLineFormatter->linesToRead(),
+                $this->fileLineFormatter->lineToStartReading()
+                );
         $outputHtml = ''; 
         foreach ($linesCollection as $lineIndex => $lineText) {
             $outputHtml.= $this->fileLineFormatter->getOutputLineText($lineIndex + 1, $lineText, 'b', '<br>');

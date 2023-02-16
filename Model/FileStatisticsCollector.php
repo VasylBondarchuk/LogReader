@@ -8,7 +8,6 @@ use Training\LogReader\Model\Config\Configs;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\App\Response\Http\FileFactory;
-use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Description of File
@@ -51,16 +50,8 @@ class FileStatisticsCollector {
         $this->file = $file;
         $this->fileFactory = $fileFactory;
         $this->configs = $configs;
-    }
+    }    
 
-    
-    public function readFileToCollection(int $lineToStartReading, int $linesToRead){
-        return new \LimitIterator(
-                    new \SplFileObject($this->getFilePath()),
-                    $lineToStartReading,
-                    $linesToRead
-                );       
-    }
     
     /**
      * 
@@ -76,16 +67,8 @@ class FileStatisticsCollector {
      */
     public function getFilePath(): string {
         return Configs::LOG_DIR_PATH . DIRECTORY_SEPARATOR . $this->getFileNameFromUrl();
-    }    
-
-    /**
-     * 
-     */
-    public function downloadFile() {
-        $downloadedFileName = $this->getFileNameFromUrl($this->getFilePath()) . '_' . date('Y/m/d H:i:s');
-        $fileContent = $this->file->fileGetContents($this->getFilePath());
-        $this->fileFactory->create($downloadedFileName, $fileContent, DirectoryList::ROOT, 'application/octet-stream');
     }
+   
 
     /**
      * 
@@ -136,10 +119,9 @@ class FileStatisticsCollector {
      * @param type $filePath
      * @return string
      */
-    public function getModificationTime($filePath): string {        
+    public function getModificationTime(string $filePath): string {        
         return date($this->configs->getTimeFormat(), $this->file->stat($filePath)['mtime']);
-    } 
-    
+    }
 
     /**
      * 

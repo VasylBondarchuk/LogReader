@@ -11,7 +11,7 @@ use Training\LogReader\Model\FileStatisticsCollector;
 use Training\LogReader\Model\Config\Configs;
 
 /**
- * Provides data for 'Back' button
+ * Provides data for 'Download' button
  */
 class DownloadButton extends GenericButton implements ButtonProviderInterface {
 
@@ -20,8 +20,16 @@ class DownloadButton extends GenericButton implements ButtonProviderInterface {
      */
     private UrlInterface $urlInterface;    
 
+    /**
+     * 
+     * @var FileStatisticsCollector
+     */
     private FileStatisticsCollector $fileStatCollector;
     
+    /**
+     * 
+     * @var Configs
+     */
     private Configs $configs;
 
     public function __construct(
@@ -47,7 +55,11 @@ class DownloadButton extends GenericButton implements ButtonProviderInterface {
         ];
     }
 
-    private function getDownloadUrl() {
+   /**
+    * 
+    * @return string
+    */
+    private function getDownloadUrl() : string {
         return $this->urlInterface->getUrl(
                 'logfiles/display/download',
                 [Configs::FILE_NAME_REQUEST_FIELD => $this->fileStatCollector->getFileNameFromUrl()]);

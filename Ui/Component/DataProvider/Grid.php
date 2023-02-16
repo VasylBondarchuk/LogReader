@@ -10,10 +10,10 @@ use Training\LogReader\Model\Config\Configs;
 
 class Grid extends AbstractDataProvider {
 
-    /**
-     * 
-     * @var File
-     */
+   /**
+    * 
+    * @var FileStatisticsCollector
+    */
     private FileStatisticsCollector $fileStatCollector;
 
     public function __construct(
@@ -28,6 +28,10 @@ class Grid extends AbstractDataProvider {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
     }
 
+    /**
+     * 
+     * @return array
+     */
     public function getData(): array {
         $result = [
             'items' => $this->getFilesDetailsArray(Configs::LOG_DIR_PATH),
@@ -36,9 +40,13 @@ class Grid extends AbstractDataProvider {
         return $result;
     }
 
+    /**
+     * 
+     * @param string $directoryPath
+     * @return array
+     */
     public function getFilesDetailsArray(string $directoryPath): array {
         $filesDetailsArray = [];
-
         foreach ($this->fileStatCollector->getFilesNamesInDirectory($directoryPath) as $fileName) {
             $filesDetailsArray[] = [
                 'file_name' => $fileName,
