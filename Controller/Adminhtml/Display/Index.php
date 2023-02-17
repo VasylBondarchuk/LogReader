@@ -4,10 +4,12 @@ declare(strict_types = 1);
 
 namespace Training\LogReader\Controller\Adminhtml\Display;
 
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 
-class Index implements HttpGetActionInterface
+class Index extends Action implements HttpGetActionInterface
 {
     // Restrict the access to the controller
     const ADMIN_RESOURCE = 'Training_LogReader::view';
@@ -17,10 +19,12 @@ class Index implements HttpGetActionInterface
      */
     private PageFactory $pageFactory;    
 
-    public function __construct(PageFactory $pageFactory)
-    {
-        
-        $this->pageFactory = $pageFactory;        
+    public function __construct(
+            Context $context,
+            PageFactory $pageFactory)
+    {  
+        $this->pageFactory = $pageFactory;
+        parent::__construct($context);        
     }
 
     public function execute()

@@ -91,18 +91,19 @@ class FileLineFormatter {
                 : $this->getFileTotalLinesQty() - Configs::DEFAULT_LINES_QTY;            
     }
     
+    
     /**
-     * Adds a prefix to the line showing the line number depending on a user configuration
+     * Returns line number separator
      * 
-     * @param int $lineNumber
-     * @return string|null
+     * @return type
      */
-    private function geFormattedtLineNumber(int $lineNumber, string $lineNumberTag = 'b')  {
-        return sprintf("%s $lineNumber %s", "<$lineNumberTag>", "</$lineNumberTag>");         
-        
+    private function geLineNumberTag() : string  {
+        $tags = ['b','i','br'];
+        return $tags[(int)$this->configs->getLineNumberFormat()]; 
     }
     
     /**
+     * Returns line number separator
      * 
      * @return type
      */
@@ -111,10 +112,25 @@ class FileLineFormatter {
     }
     
     /**
+     * Returns formatted line number
      * 
-     * @return type
+     * @param int $lineNumber
+     * @return string|null
+     */
+    private function geFormattedtLineNumber(int $lineNumber)  {        
+        $lineNumberTag = $this->geLineNumberTag();
+        $lineNumberSeparator = $this->geLineNumberSeparator();
+        $lineNumberFormat = "%s $lineNumber %s $lineNumberSeparator";
+        return sprintf($lineNumberFormat, "<$lineNumberTag>", "</$lineNumberTag>");         
+        
+    }
+    
+    /**
+    * Returns line separator
+    * 
+    * @return type
     */
-    private function geLineSeparator()  {
+    private function geLineSeparator(): string  {
         $separators = ['<br>','<br><br>','<hr>'];
         return $separators[$this->configs->getLineSeparator()]; 
     }
@@ -129,10 +145,8 @@ class FileLineFormatter {
      */
     public function getFormattedLine(int $lineNumber, string $lineText): string {        
         $formattedLine = $lineText . $this->geLineSeparator();        
-        if($this->configs->getAddLineNumber()){            
-            $lineNumberTag = $this->configs->getLineNumberFormat(); 
-            $lineNumberSeparator = $this->geLineNumberSeparator(); 
-            $formattedLine = $this->geFormattedtLineNumber($lineNumber, $lineNumberTag) . $lineNumberSeparator . $formattedLine;
+        if($this->configs->getAddLineNumber()){ 
+            $formattedLine = $this->geFormattedtLineNumber($lineNumber) . $formattedLine;
         }
         return $formattedLine;
     }    

@@ -3,9 +3,9 @@
    <acl>
      <resources>
         <resource id="Magento_Backend::admin">
-           <resource id="Training_LogReader::menu" title="Read Log Files" translate="title" sortOrder="10" >
-              <resource id="Training_LogReader::view" title="View Log Files" translate="title" sortOrder="50" />
-              <resource id="Training_LogReader::download" title="Download Log Files" translate="title" sortOrder="100" />            
+           <resource id="Training_LogReader::menu" title="Log File Reader" sortOrder="10" >
+              <resource id="Training_LogReader::view" title="View Log Files" sortOrder="50" />
+              <resource id="Training_LogReader::download" title="Download Log Files" sortOrder="100" />              
            </resource>
         </resource>
      </resources>

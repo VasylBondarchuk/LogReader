@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Training\LogReader\Controller\Adminhtml\Display;
 
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Training\LogReader\Model\FileStatisticsCollector;
 use Training\LogReader\Model\FileManager;
 
-class Download implements HttpGetActionInterface {
+class Download extends Action implements HttpGetActionInterface {
 
     // Restrict the access to the controller
     const ADMIN_RESOURCE = 'Training_LogReader::download';
@@ -19,7 +21,7 @@ class Download implements HttpGetActionInterface {
      * 
      * @var ResultFactory
      */       
-    private ResultFactory $resultFactory;
+    protected $resultFactory;
     
     /**
      * 
@@ -37,9 +39,10 @@ class Download implements HttpGetActionInterface {
      * 
      * @var ManagerInterface
      */
-    private ManagerInterface $messageManager;
+    protected $messageManager;
 
     public function __construct(            
+            Context $context,
             ResultFactory $resultFactory,
             ManagerInterface $messageManager,            
             FileStatisticsCollector $fileStatCollector,
@@ -50,6 +53,7 @@ class Download implements HttpGetActionInterface {
         $this->messageManager = $messageManager;      
         $this->fileStatCollector = $fileStatCollector;
         $this->fileManager = $fileManager;
+        parent::__construct($context); 
     }
 
     public function execute() {

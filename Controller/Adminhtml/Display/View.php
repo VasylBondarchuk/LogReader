@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Training\LogReader\Controller\Adminhtml\Display;
 
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\RequestInterface;
@@ -15,7 +16,7 @@ use Training\LogReader\Model\FileValidator;
 use Training\LogReader\Model\FileLineFormatter;
 use Training\LogReader\Model\Config\Configs;
 
-class View implements HttpPostActionInterface, HttpGetActionInterface {
+class View extends Action implements HttpGetActionInterface {
 
     // Restrict the access to the controller
     const ADMIN_RESOURCE = 'Training_LogReader::view';
@@ -29,7 +30,7 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
      * 
      * @var ResultFactory
      */
-    private ResultFactory $resultFactory;
+    protected $resultFactory;
 
     /**
      * 
@@ -41,7 +42,7 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
      * 
      * @var ManagerInterface
      */
-    private ManagerInterface $messageManager;
+    protected $messageManager;
 
     /**
      * 
@@ -68,6 +69,7 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
     private Configs $configs;
 
     public function __construct(
+            Context $context,
             PageFactory $pageFactory,
             ResultFactory $resultFactory,
             RequestInterface $request,
@@ -85,6 +87,7 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
         $this->fileValidator = $fileValidator;
         $this->fileLineFormatter = $fileLineFormatter;
         $this->configs = $configs;
+        parent::__construct($context); 
     }
 
     public function execute() {
@@ -113,10 +116,10 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
         
         if ($this->request->getPostValue()) {
             if ($lastLinesQtyFromUrl > $this->fileLineFormatter->getFileTotalLinesQty()) {
-                $this->messageManager->addErrorMessage(__('Entered lines to read number exceeds the total fileLineFormatter number of the file'));
+                $this->messageManager->addErrorMessage(__('Entered value exceeds the total number of lines'));
             }
             if ($lastLinesQtyFromUrl <= 0) {
-                $this->messageManager->addErrorMessage(__('Entered lines to read number should a be positive integer number'));
+                $this->messageManager->addErrorMessage(__('Entered value should a be positive integer number'));
             }            
         }
         // warning if default lines to read excceds total number of lines
@@ -137,7 +140,7 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
                             Configs::LOG_DIR_PATH)
             );
         } elseif (!$this->fileValidator->isFileReadable()) {
-            $this->messageManager->addErrorMessage(__('File %1 is not a redable ',
+            $this->messageManager->addErrorMessage(__('File %1 is not redable ',
                             $this->fileStatCollector->getFileNameFromUrl())
             );
         } elseif (!$this->fileValidator->isFileText()) {

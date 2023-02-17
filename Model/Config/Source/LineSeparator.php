@@ -16,9 +16,9 @@ class LineSeparator implements ArrayInterface {
     public function toOptionArray()
     {
         return [
-            ['value' => '0', 'label' => __('One  line break')],
-            ['value' => '1', 'label' => __('Double line break')],
-            ['value' => '2', 'label' => __('Horizontal line')],
+            ['value' => '0', 'label' => __('one line break')],
+            ['value' => '1', 'label' => __('double line break')],
+            ['value' => '2', 'label' => __('horizontal line')],
         ];
     }    
 

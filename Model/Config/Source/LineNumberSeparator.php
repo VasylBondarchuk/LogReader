@@ -16,8 +16,8 @@ class LineNumberSeparator implements ArrayInterface {
     public function toOptionArray()
     {
         return [
-            ['value' => 1, 'label' => __('One non-breaking space')],
-            ['value' => 2, 'label' => __('Double non-breaking space')]            
+            ['value' => 1, 'label' => __('one non-breaking space')],
+            ['value' => 2, 'label' => __('double non-breaking space')]            
         ];
     }    
 
