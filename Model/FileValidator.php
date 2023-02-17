@@ -9,7 +9,7 @@ use Magento\Framework\App\Response\Http\FileFactory;
 use Training\LogReader\Model\FileStatisticsCollector;
 
 /**
- * Collects file statistics
+ * Validates file
  *
  * @author vasyl
  */
@@ -44,6 +44,7 @@ class FileValidator {
     }
 
     /**
+     * Check if the file still exists
      * 
      * @return bool
      */
@@ -52,6 +53,7 @@ class FileValidator {
     }
 
     /**
+     * Check if the file is a text file
      * 
      * @return bool
      */
@@ -62,6 +64,7 @@ class FileValidator {
     }
 
     /**
+     * Check if the file is readable
      * 
      * @return bool
      */
@@ -80,5 +83,4 @@ class FileValidator {
                $this->isFileReadable() &&
                $this->isFileText();
     }
-
 }

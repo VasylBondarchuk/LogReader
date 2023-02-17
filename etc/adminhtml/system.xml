@@ -15,7 +15,14 @@
                 <field id="default_last_lines_qty" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Default last lines qty </label>
                     <validate>required-entry validate-zero-or-greater</validate>
+                    <comment>In the case entered number exceeds the total lines number this value is set as 10 </comment>
                 </field>                
+                <!--Set line separator -->
+                <field id="line_separator" translate="label" type="select"
+                                   sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Line Separator</label>
+                    <source_model>Training\LogReader\Model\Config\Source\LineSeparator</source_model>
+                </field>                                                    
                 <!--Set whether to add line number to output --> 
                 <field id="add_lines_numbers_to_output" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Add line number to output</label>                    
@@ -23,18 +30,38 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Adding a line number to each line may have a negative impact on performance</comment>
                 </field>
+                 <!--Set line number format -->
+                <field id="line_number_format" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Line number format</label>                    
+                    <source_model>Training\LogReader\Model\Config\Source\LineNumberFormat</source_model>
+                    <depends>
+                        <field id="add_lines_numbers_to_output">1</field>
+                    </depends>
+                </field>
+                
+                <!--Set line number separator format -->
+                <field id="line_number_separator" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Line number separatort</label>                    
+                    <source_model>Training\LogReader\Model\Config\Source\LineNumberSeparator</source_model>
+                    <depends>
+                        <field id="add_lines_numbers_to_output">1</field>
+                    </depends>
+                </field>                        
+                                                                
                 <!--Set file size format -->
                 <field id="file_size_format" translate="label" type="select"
-                                   sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                                   sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>File size format</label>
                     <source_model>Training\LogReader\Model\Config\Source\FileSizeFormat</source_model>
                 </field> 
+                
                 <!--Set file modification time format -->
                 <field id="modification_date_format" translate="label" type="select"
-                                   sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                                   sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Modification time format</label>
                     <source_model>Training\LogReader\Model\Config\Source\DateFormat</source_model>
                 </field> 
+                   
             </group>
         </section>
     </system>

@@ -48,19 +48,24 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
      * @var File
      */
     private FileStatisticsCollector $fileStatCollector;
-    
+
     /**
      * 
      * @var File
      */
     private FileValidator $fileValidator;
-    
-    
+
     /**
      * 
      * @var File
      */
     private FileLineFormatter $fileLineFormatter;
+
+    /**
+     * 
+     * @var Configs
+     */
+    private Configs $configs;
 
     public function __construct(
             PageFactory $pageFactory,
@@ -69,7 +74,8 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
             ManagerInterface $messageManager,
             FileStatisticsCollector $fileStatCollector,
             FileValidator $fileValidator,
-            FileLineFormatter $fileLineFormatter 
+            FileLineFormatter $fileLineFormatter,
+            Configs $configs
     ) {
         $this->pageFactory = $pageFactory;
         $this->resultFactory = $resultFactory;
@@ -77,37 +83,46 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
         $this->messageManager = $messageManager;
         $this->fileStatCollector = $fileStatCollector;
         $this->fileValidator = $fileValidator;
-        $this->fileLineFormatter= $fileLineFormatter;   
+        $this->fileLineFormatter = $fileLineFormatter;
+        $this->configs = $configs;
     }
 
     public function execute() {
-        
-        if (!$this->fileValidator->isFileValid()) {            
+
+        // If the file is not valid redirect to the list page
+        if (!$this->fileValidator->isFileValid()) {
             $this->validateFile();
             $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
             $resultRedirect->setPath('*/*/');
             return $resultRedirect;
-        } 
+        }
+
+        $this->validateLinesToRead();
         
-        $this->validatefileLineFormatterQtyInput();
         $page = $this->pageFactory->create();
         $page->getConfig()->getTitle()->prepend(__($this->fileStatCollector->getFileNameFromUrl()));
         return $page;
     }
 
     /**
-     * Validates user input of fileLineFormatter to read number
+     * Validates user input of lines to read number
      *  
-     */    
-    private function validatefileLineFormatterQtyInput() {       
-        $lastLinesQtyFromUrl = (int)$this->request->getParam(Configs::LINES_QTY_REQUEST_FIELD);
+     */
+    private function validateLinesToRead() {
+        $lastLinesQtyFromUrl = (int) $this->request->getParam(Configs::LINES_QTY_REQUEST_FIELD);
+        
         if ($this->request->getPostValue()) {
             if ($lastLinesQtyFromUrl > $this->fileLineFormatter->getFileTotalLinesQty()) {
-                $this->messageManager->addErrorMessage(__('Entered qty exceeds the total fileLineFormatter number of the file'));
+                $this->messageManager->addErrorMessage(__('Entered lines to read number exceeds the total fileLineFormatter number of the file'));
             }
             if ($lastLinesQtyFromUrl <= 0) {
-                $this->messageManager->addErrorMessage(__('Entered fileLineFormatter qty should a be positive integer number'));
-            }
+                $this->messageManager->addErrorMessage(__('Entered lines to read number should a be positive integer number'));
+            }            
+        }
+        // warning if default lines to read excceds total number of lines
+        elseif ($this->configs->getDefaultLinesToRead() > $this->fileLineFormatter->getFileTotalLinesQty()) {
+                $this->messageManager->addWarningMessage(__('Configured default lines to read exceeds total lines number. Lines to read number was set to %1',
+                        Configs::DEFAULT_LINES_QTY));
         }
     }
 
@@ -120,21 +135,16 @@ class View implements HttpPostActionInterface, HttpGetActionInterface {
             $this->messageManager->addErrorMessage(__('File %1 can not be found in %2 ',
                             $this->fileStatCollector->getFileNameFromUrl(),
                             Configs::LOG_DIR_PATH)
-            );            
-        }
-
-        elseif (!$this->fileValidator->isFileReadable()) {
+            );
+        } elseif (!$this->fileValidator->isFileReadable()) {
             $this->messageManager->addErrorMessage(__('File %1 is not a redable ',
                             $this->fileStatCollector->getFileNameFromUrl())
-            );            
-        }   
-        
-        elseif (!$this->fileValidator->isFileText()) {
+            );
+        } elseif (!$this->fileValidator->isFileText()) {
             $this->messageManager->addErrorMessage(__('File %1 is not a text file ',
                             $this->fileStatCollector->getFileNameFromUrl())
-            );           
-        } 
-        
+            );
+        }
     }
 
 }

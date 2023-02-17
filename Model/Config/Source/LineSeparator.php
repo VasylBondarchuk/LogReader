@@ -11,13 +11,15 @@ use Magento\Framework\Option\ArrayInterface;
  *
  * @author vasyl
  */
-class FileSizeFormat implements ArrayInterface {
+class LineSeparator implements ArrayInterface {
 
     public function toOptionArray()
     {
         return [
-            ['value' => 1000, 'label' => __('Decimal (in base 10)')],
-            ['value' => 1024, 'label' => __('Binary (in base 2)')]            
+            ['value' => '0', 'label' => __('One  line break')],
+            ['value' => '1', 'label' => __('Double line break')],
+            ['value' => '2', 'label' => __('Horizontal line')],
         ];
-    } 
+    }    
+
 }

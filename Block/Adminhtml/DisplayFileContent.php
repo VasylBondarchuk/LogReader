@@ -55,7 +55,7 @@ class DisplayFileContent extends Template {
                 $this->fileLineFormatter->linesToRead());
         $outputHtml = ''; 
         foreach ($linesCollection as $lineIndex => $lineText) {
-            $outputHtml.= $this->fileLineFormatter->getOutputLineText($lineIndex + 1, $lineText, 'b', '<br>');
+            $outputHtml.= $this->fileLineFormatter->getFormattedLine($lineIndex + 1, $lineText);
         }    
         return $outputHtml;
     }

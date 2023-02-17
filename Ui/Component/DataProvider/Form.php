@@ -51,7 +51,7 @@ class Form extends AbstractDataProvider {
                 'file_size' => $this->fileStatCollector->getFileSize($this->fileStatCollector->getFilePath()),
                 'modified_at' => $this->fileStatCollector->getModificationTime($this->fileStatCollector->getFilePath()),
                 'total_lines_qty' => $this->fileLineFormatter->getFileTotalLinesQty(),
-                'lines_qty' => $this->fileLineFormatter->getLastLinesQty()                
+                'lines_qty' => $this->fileLineFormatter->linesToRead()                
             ]
         ];
         return $result;

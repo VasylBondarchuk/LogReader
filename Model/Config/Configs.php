@@ -21,9 +21,12 @@ class Configs {
     const LINES_QTY_REQUEST_FIELD = 'lines_qty';
     // Configs pathes
     const DEFAULT_LINES_QTY_CONFIGS_PATH = 'logreader_configuration/logreader_configuration_general/default_last_lines_qty';
-    const ADD_LINES_NUMBER_CONFIGS_PATH = 'logreader_configuration/logreader_configuration_general/add_lines_numbers_to_output';
-    const GET_MODIFICATION_DATE_FORMAT = 'logreader_configuration/logreader_configuration_general/modification_date_format';
-    const FILE_SIZE_FORMAT = 'logreader_configuration/logreader_configuration_general/file_size_format';
+    const LINE_SEPARATOR_PATH = 'logreader_configuration/logreader_configuration_general/line_separator';
+    const ADD_LINES_NUMBER_CONFIGS_PATH = 'logreader_configuration/logreader_configuration_general/add_lines_numbers_to_output';    
+    const LINE_NUMBER_FORMAT_PATH = 'logreader_configuration/logreader_configuration_general/line_number_format';
+    const LINE_NUMBER_SEPARATOR_PATH = 'logreader_configuration/logreader_configuration_general/line_number_separator';
+    const MODIFICATION_DATE_FORMAT_PATH = 'logreader_configuration/logreader_configuration_general/modification_date_format';
+    const FILE_SIZE_FORMAT_PATH = 'logreader_configuration/logreader_configuration_general/file_size_format';
 
     /**
      * @var ScopeConfigInterface
@@ -34,16 +37,18 @@ class Configs {
         $this->scopeConfig = $scopeConfig;
     }
 
+    private function getConfigParamValue(string $configPath){
+        return $this->scopeConfig->getValue($configPath, ScopeInterface::SCOPE_STORE);
+    }
+    
     /**
      * 
      * @return int
      */
     public function getDefaultLinesToRead(): int {
-        return $this->isLastLinesQtyValid(
-                        $this->scopeConfig->getValue(
-                                Configs::DEFAULT_LINES_QTY_CONFIGS_PATH,
-                                ScopeInterface::SCOPE_STORE)
-                ) ? (int) $this->scopeConfig->getValue(self::DEFAULT_LINES_QTY_CONFIGS_PATH, ScopeInterface::SCOPE_STORE) : self::DEFAULT_LINES_QTY;
+        return $this->isLastLinesQtyValid($this->getConfigParamValue(self::DEFAULT_LINES_QTY_CONFIGS_PATH))
+                ? (int) $this->getConfigParamValue(self::DEFAULT_LINES_QTY_CONFIGS_PATH)
+                : self::DEFAULT_LINES_QTY;
     }
 
     /**
@@ -57,6 +62,30 @@ class Configs {
                                 ScopeInterface::SCOPE_STORE)
                 ) ? (bool) $this->scopeConfig->getValue(self::ADD_LINES_NUMBER_CONFIGS_PATH, ScopeInterface::SCOPE_STORE) : self::DEFAULT_ADD_LINE_NUMBER;
     }
+    
+    /**
+     * 
+     * @return int
+    */
+    public function getLineNumberFormat(): string {
+        return $this->getConfigParamValue(self::LINE_NUMBER_FORMAT_PATH);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getLineNumberSeparator(): string {
+        return $this->getConfigParamValue(self::LINE_NUMBER_SEPARATOR_PATH);
+    }
+    
+    /**
+     * 
+     * @return string
+    */
+    public function getLineSeparator(): int {        
+        return (int)$this->getConfigParamValue(self::LINE_SEPARATOR_PATH);
+    }
 
     /**
      * 
@@ -68,18 +97,18 @@ class Configs {
                                 Configs::DEFAULT_LINES_QTY_CONFIGS_PATH,
                                 ScopeInterface::SCOPE_STORE)
                 )
-                ? (string) $this->scopeConfig->getValue(self::GET_MODIFICATION_DATE_FORMAT, ScopeInterface::SCOPE_STORE)
+                ? (string) $this->scopeConfig->getValue(self::MODIFICATION_DATE_FORMAT_PATH, ScopeInterface::SCOPE_STORE)
                 : self::DEFAULT_TIME_FORMAT;
     }
     
-        /**
+    /**
      * 
      * @return int
-     */
+    */
     public function getFileSizeFormat(): string {
-        return  $this->scopeConfig->getValue(self::FILE_SIZE_FORMAT, ScopeInterface::SCOPE_STORE)
-                ? $this->scopeConfig->getValue(self::FILE_SIZE_FORMAT, ScopeInterface::SCOPE_STORE)
-                : self::DEFAULT_FILE_SIZE;
+        return  $this->scopeConfig->getValue(self::FILE_SIZE_FORMAT_PATH, ScopeInterface::SCOPE_STORE)
+                ? $this->scopeConfig->getValue(self::FILE_SIZE_FORMAT_PATH, ScopeInterface::SCOPE_STORE)
+                : self::DEFAULT_FILE_SIZE_FORMAT;
     }
 
     /**

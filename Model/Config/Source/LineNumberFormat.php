@@ -11,13 +11,14 @@ use Magento\Framework\Option\ArrayInterface;
  *
  * @author vasyl
  */
-class FileSizeFormat implements ArrayInterface {
+class LineNumberFormat implements ArrayInterface {
 
     public function toOptionArray()
     {
         return [
-            ['value' => 1000, 'label' => __('Decimal (in base 10)')],
-            ['value' => 1024, 'label' => __('Binary (in base 2)')]            
+            ['value' => 'b', 'label' => __('bold')],
+            ['value' => 'i', 'label' => __('italic')]            
         ];
-    } 
+    }    
+
 }
