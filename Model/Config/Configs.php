@@ -11,14 +11,17 @@ class Configs {
 
     // Path to directory containing log files
     const LOG_DIR_PATH = BP . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log';
+    
     // Deafault customizable configs values
     const DEFAULT_LINES_QTY = 10;
     const DEFAULT_ADD_LINE_NUMBER = false;
     const DEFAULT_TIME_FORMAT = 'F j, Y, g:i a';
-    const DEFAULT_FILE_SIZE_FORMAT = 1000;    
+    const DEFAULT_FILE_SIZE_FORMAT = 1000;
+    
     // Request fields names
     const FILE_NAME_REQUEST_FIELD = 'file_name';
     const LINES_QTY_REQUEST_FIELD = 'lines_qty';
+    
     // Configs pathes
     const DEFAULT_LINES_QTY_CONFIGS_PATH = 'logreader_configuration/logreader_configuration_general/default_last_lines_qty';
     const LINE_SEPARATOR_PATH = 'logreader_configuration/logreader_configuration_general/line_separator';
@@ -105,9 +108,9 @@ class Configs {
      * 
      * @return int
     */
-    public function getFileSizeFormat(): string {
+    public function getFileSizeFormat(): int {
         return  $this->scopeConfig->getValue(self::FILE_SIZE_FORMAT_PATH, ScopeInterface::SCOPE_STORE)
-                ? $this->scopeConfig->getValue(self::FILE_SIZE_FORMAT_PATH, ScopeInterface::SCOPE_STORE)
+                ? (int)$this->scopeConfig->getValue(self::FILE_SIZE_FORMAT_PATH, ScopeInterface::SCOPE_STORE)
                 : self::DEFAULT_FILE_SIZE_FORMAT;
     }
 
@@ -115,7 +118,7 @@ class Configs {
      * 
      * @return int
      */
-    public function isLastLinesQtyValid(string $linesQty): bool {
+    public function isLastLinesQtyValid($linesQty): bool {
         return !empty($linesQty) && (int) $linesQty > 0;
     }
 

@@ -7,6 +7,7 @@ namespace Training\LogReader\Controller\Adminhtml\Display;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\RequestInterface;
@@ -16,7 +17,7 @@ use Training\LogReader\Model\FileValidator;
 use Training\LogReader\Model\FileLineFormatter;
 use Training\LogReader\Model\Config\Configs;
 
-class View extends Action implements HttpGetActionInterface {
+class View extends Action implements HttpPostActionInterface, HttpGetActionInterface {
 
     // Restrict the access to the controller
     const ADMIN_RESOURCE = 'Training_LogReader::view';
