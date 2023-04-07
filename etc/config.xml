@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <logreader_configuration>
+            <logreader_configuration_general>
+                <default_last_lines_qty>10</default_last_lines_qty>
+            </logreader_configuration_general>
+        </logreader_configuration>
+    </default>
+</config>
